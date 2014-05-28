@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.util.Assert;
 
 import com.innovez.core.entity.support.search.SearchParameterHolder;
@@ -23,52 +26,60 @@ public class SimpleSearchForm implements SearchParameterHolder, Serializable {
 	/**
 	 * Search by field, used for simple search (With one parameter).
 	 */
-	private String searchField;
+	@NotBlank
+	private String parameterName;
+	
+	/**
+	 * Search parameter value.
+	 */
+	@NotNull
+	private Object parameterValue;
 	
 	/**
 	 * Search target type.
 	 */
-	private Class<?> target;
+	private Class<?> searchTarget;
 	
 	/**
 	 * Parameter map.
 	 */
 	private Map<String, Object> parameters = new HashMap<String, Object>();
 	
-	public SimpleSearchForm() {}
-	public SimpleSearchForm(Class<?> target) {
-		Assert.notNull(target, "Target type parameter should not be null");
-		this.target = target;
+	SimpleSearchForm() {}
+	public SimpleSearchForm(Class<?> searchTarget) {
+		Assert.notNull(searchTarget, "Target type argument should not be null");
+		this.searchTarget = searchTarget;
+	}
+	public SimpleSearchForm(Class<?> searchTarget, boolean enabled, String parameterName, String parameterValue) {
+		Assert.notNull(searchTarget, "Target type argument should not be null");
+		Assert.notNull(parameterName, "Parameter name argument should not be null.");
+		Assert.notNull(parameterValue, "Parameter name argument should not be null.");
+		
+		this.searchTarget = searchTarget;
+		this.enabled = enabled;
+		this.parameterName = parameterName;
+		this.parameterValue = parameterValue;
 	}
 	
 	public boolean isEnabled() {
 		return enabled;
 	}
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+	
+	public String getParameterName() {
+		return parameterName;
 	}
 	
-	public String getSearchField() {
-		return searchField;
-	}
-	public void setSearchField(String searchField) {
-		this.searchField = searchField;
+	public Object getParameterValue() {
+		return parameterValue;
 	}
 	
 	@Override
-	public Class<?> getTarget() {
-		return target;
-	}
-	public void setTarget(Class<?> target) {
-		Assert.notNull(target, "Target type parameter should not be null");
-		this.target = target;
+	public Class<?> getSearchTarget() {
+		return searchTarget;
 	}
 	
 	@Override
 	public Map<String, Object> getParameters() {
 		return parameters;
-	}
-	public void setParameters(Map<String, Object> parameters) {
-		this.parameters = parameters;
 	}
 }

@@ -69,7 +69,7 @@
       	  <a href="${organizationsEndpointUrl}?create" class="btn btn-primary">New Organization</a>
         </div>
         <div class="col-md-4">
-        	<search:simpleForm formObject="${searchOrgnazitionsForm}" scriptVar="searchScript" />
+        	<search:simpleForm formObject="${searchOrgnazitionsForm}" formUrl="${organizationsEndpointUrl}?search" scriptVar="searchScript" />
         </div>
       </div>
       <div class="table-responsive">
@@ -106,7 +106,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="${staticAssetsUrl}/js/jquery-1.11.0.min.js"></script>
     <script src="${staticAssetsUrl}/js/bootstrap.min.js"></script>
     ${searchScript}
   </body>

@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Import;
 
 /**
- * Marking annotation to enable spring data jpa search features.
+ * Marking annotation to enable spring data search features.
  * 
  * @author zakyalvan
  */
@@ -19,9 +19,17 @@ import org.springframework.context.annotation.Import;
 @Import(SearchRelatedBeanDefinitionRegistrar.class)
 public @interface EnableSpringDataJpaSearch {
 	/**
-	 * Persistence mechanism used in backgroud by spring data.
+	 * Persistence mechanism used in background by spring data.
 	 * 
 	 * @return
 	 */
 	PersistenceMechanism mechanism() default PersistenceMechanism.JPA;
+	
+	/**
+	 * Enable cache search meta model.
+	 * Currently not used yet.
+	 * 
+	 * @return
+	 */
+	boolean cacheMetamodel() default false;
 }

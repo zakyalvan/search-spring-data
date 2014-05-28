@@ -33,18 +33,32 @@ public class SearchRelatedBeanDefinitionRegistrar implements ImportBeanDefinitio
 		
 		if(persistenceMechanism == PersistenceMechanism.JPA) {
 			logger.debug("Using jpa persistence mechanism, then registering jpa related search bean.");
+			
+			/**
+			 * Register search manager.
+			 */
 			BeanDefinition searchManager = BeanDefinitionBuilder.rootBeanDefinition(SpringDataJpaSearchManager.class)
 					.getBeanDefinition();
 			registry.registerBeanDefinition("jpaSearchManager", searchManager);
 			
+			/**
+			 * Register search meta-model reader.
+			 */
 			BeanDefinition searchMetamodelReader = BeanDefinitionBuilder.rootBeanDefinition(SearchableAnnotatedJpaEntityMetamodelReader.class)
 					.getBeanDefinition();
 			registry.registerBeanDefinition("defaultSearchMetamodelReader", searchMetamodelReader);
 			
+			/**
+			 * Register search-param annotated argument method advisor.
+			 */
 			BeanDefinition searchParamsMethodArgumentAdvisor = BeanDefinitionBuilder.rootBeanDefinition(SearchParamsMethodArgumentAdvisor.class)
 					.setFactoryMethod("aspectOf")
 					.getBeanDefinition();
 			registry.registerBeanDefinition("searchParamsMethodArgumentAdvisor", searchParamsMethodArgumentAdvisor);
+			
+			/**
+			 * Register cache manager abstraction.
+			 */
 		}
 	}
 }

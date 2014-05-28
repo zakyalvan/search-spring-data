@@ -43,7 +43,7 @@ public final class SearchableJpaEntityMetamodel implements SearchableMetamodel, 
 
 	@Override
 	public SearchableFieldMetamodel getSearchField(String fieldName) {
-		Assert.isTrue(hasSearchField(fieldName), "Given fieldName parameter is not found as searchable field.");
+		Assert.isTrue(hasSearchField(fieldName), "Given fieldName parameter : '" + fieldName + "' is not found as searchable field.");
 		return searchFields.get(fieldName);
 	}
 

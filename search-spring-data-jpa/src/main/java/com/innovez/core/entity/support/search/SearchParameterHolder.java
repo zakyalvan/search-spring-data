@@ -13,7 +13,7 @@ public interface SearchParameterHolder {
 	 * 
 	 * @return
 	 */
-	Class<?> getTarget();
+	Class<?> getSearchTarget();
 	
 	/**
 	 * Retrieve parameters.

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.innovez.core.entity.support.search.annotation.SearchTarget;
 import com.innovez.data.search.support.dto.SimpleSearchForm;
 import com.innovez.search.samples.entity.Organization;
 import com.innovez.search.samples.service.OrganizationService;
@@ -54,7 +55,7 @@ public class OrganizationController {
 	}
 	
 	@RequestMapping(value={"", "/"}, method=RequestMethod.GET)
-	public String list(SimpleSearchForm searchForm, @RequestParam(value="page", defaultValue="0") Integer page, @RequestParam(value="size", defaultValue="10")Integer size, Model model) {
+	public String list(@ModelAttribute(SEARCH_FORM_NAME) SimpleSearchForm searchForm, @RequestParam(value="page", defaultValue="0") Integer page, @RequestParam(value="size", defaultValue="10")Integer size, Model model) {
 		logger.debug("Retrieve list of organization");
 		Page<Organization> pagedDataList = organizationService.getPagedOrganizationsList(page, size);
 		model.addAttribute("pagedDataList", pagedDataList);
@@ -63,8 +64,9 @@ public class OrganizationController {
 	}
 	
 	@RequestMapping(value={"", "/"}, params={"search"}, method=RequestMethod.POST)
-	public String search(@ModelAttribute(SEARCH_FORM_NAME) SimpleSearchForm simpleSearchForm, BindingResult bindingResult) {
-		logger.debug("Handle search organizations");
+	public String search(@SearchTarget(Organization.class) SimpleSearchForm searchForm, Model model) {
+		logger.debug("Handle search with target : " + searchForm.getSearchTarget());
+		model.addAttribute(SEARCH_FORM_NAME, searchForm);
 		return "redirect:/organizations";
 	}
 }

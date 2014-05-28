@@ -3,18 +3,17 @@ package com.innovez.data.search.support.webmvc;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
+import org.springframework.expression.EvaluationException;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.support.WebArgumentResolver;
 import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.context.request.WebRequest;
 
 import com.innovez.core.entity.support.search.SearchManager;
 import com.innovez.core.entity.support.search.SearchParameterHolder;
+import com.innovez.core.entity.support.search.annotation.SearchTarget;
 import com.innovez.data.search.support.dto.SimpleSearchForm;
 
 /**
@@ -23,7 +22,7 @@ import com.innovez.data.search.support.dto.SimpleSearchForm;
  * @author zakyalvan
  */
 public class SearchParameterHolderArgumentResolver implements WebArgumentResolver {
-	public static final String DEFAULT_TARGET_REQUEST_PARAMETER_NAME = "_simpleSearchForm_target";
+	public static final String DEFAULT_TARGET_TYPE_REQUEST_PARAMETER_NAME = "_simpleSearchForm_target";
 	public static final String DEFAULT_SEARCH_BY_REQUEST_PARAMETER_NAME = "_simpleSearchForm_searchBy";
 	public static final String DEFAULT_SEARCH_PARAM_REQUEST_PARAMETER_NAME = "_simpleSearchForm_searchParameter";
 	
@@ -34,9 +33,9 @@ public class SearchParameterHolderArgumentResolver implements WebArgumentResolve
 	
 	private ExpressionParser expressionParser = new SpelExpressionParser();
 	
-	private String targetRequestParameter = DEFAULT_TARGET_REQUEST_PARAMETER_NAME;
-	private String searchByRequestParameter = DEFAULT_SEARCH_BY_REQUEST_PARAMETER_NAME;
-	private String searchParamRequestParameter = DEFAULT_SEARCH_PARAM_REQUEST_PARAMETER_NAME;
+	private String targetTypeRequestParam = DEFAULT_TARGET_TYPE_REQUEST_PARAMETER_NAME;
+	private String parameterNameRequestParam = DEFAULT_SEARCH_BY_REQUEST_PARAMETER_NAME;
+	private String parameterValueRequestParam = DEFAULT_SEARCH_PARAM_REQUEST_PARAMETER_NAME;
 	
 	@Override
 	public Object resolveArgument(MethodParameter methodParameter, NativeWebRequest webRequest) throws Exception {
@@ -48,70 +47,59 @@ public class SearchParameterHolderArgumentResolver implements WebArgumentResolve
 			return WebArgumentResolver.UNRESOLVED;
 		}
 		
-		String target = webRequest.getParameter(targetRequestParameter);
-		String searchBy = webRequest.getParameter(searchByRequestParameter);
-		String searchParameter = webRequest.getParameter(searchParamRequestParameter);
-		
-		try {
-			Assert.isTrue(StringUtils.hasText((String) target), "No request parameter with name " + targetRequestParameter + " for determining search target type.");
-			Assert.isTrue(StringUtils.hasText((String) searchBy), "No request parameter with name " + searchByRequestParameter + " for determining search field used.");
-			Assert.isTrue(StringUtils.hasText((String) searchParameter), "No request parameter with name " + searchParamRequestParameter + " for determining search parameter value.");
-		}
-		catch(IllegalArgumentException iae) {
-			logger.error("One or more required request parameter for search not found in request.");
-			return WebArgumentResolver.UNRESOLVED;
+		logger.debug("Try to resolve search target type, first from @SearchTarget argument annotation, if not found, try resolve from submitted search target type.");
+		Class<?> searchTargetType = null;
+		SearchTarget searchTargetAnnotation = methodParameter.getParameterAnnotation(SearchTarget.class);
+		if(searchTargetAnnotation != null) {
+			logger.debug("Search form handler parameter hinted with @SearchTarget annotation.");
+			searchTargetType = searchTargetAnnotation.value();
 		}
 		
-		SimpleSearchForm simpleSearchForm = null;
-		
-		/**
-		 * TODO Fix me! This block not usable!
-		 */
-		ModelAttribute modelAttribute = methodParameter.getParameterAnnotation(ModelAttribute.class);
-		boolean modelAttributeAnnotatedParam = false;
-		if(modelAttribute != null) {
-			logger.debug("Method parameter annotated with ModelAttribute, try lookup to session for object SimpleSearchForm.");
-			modelAttributeAnnotatedParam = true;
-			String searchFormName = modelAttribute.value();
-			simpleSearchForm = (SimpleSearchForm) webRequest.getAttribute(searchFormName, WebRequest.SCOPE_SESSION);
-			logger.error("No search form object found at session with name : " + searchFormName);
-		}
-		
-		if(simpleSearchForm == null) {
-			if(modelAttributeAnnotatedParam) {
-				logger.debug("Method parameter annotated with @ModelAttribute, no serach form object found for given attribute name.");
+		if(searchTargetType == null) {
+			logger.debug("Search form handler parameter not hinted with @SearchTarget, try to resolve target type from request parameter.");
+			String submittedSearchTargetTypeRequestParam = webRequest.getParameter(targetTypeRequestParam);
+			
+			try {
+				Expression searchTargetTypeExpression = expressionParser.parseExpression(submittedSearchTargetTypeRequestParam);
+				searchTargetType = searchTargetTypeExpression.getValue(Class.class);
 			}
-			logger.debug("Create fresh search form object.");
-			simpleSearchForm = new SimpleSearchForm();
+			catch(EvaluationException evaluationException) {
+				logger.error("Can't parse search target type submitted", evaluationException);
+				throw new IllegalStateException("Can't parse search target type submitted", evaluationException);
+			}
 		}
 		
-		Expression targetTypeExpression = expressionParser.parseExpression(target);
-		Class<?> targetType = targetTypeExpression.getValue(Class.class);
+		String parameterName = webRequest.getParameter(parameterNameRequestParam);
+		String parameterValue = webRequest.getParameter(parameterValueRequestParam);
 		
-		simpleSearchForm.setTarget(targetType);
-		simpleSearchForm.getParameters().put(searchBy, searchParameter);
+		boolean enabled = StringUtils.hasText(parameterName) && StringUtils.hasText(parameterValue);
 		
-		return simpleSearchForm;
+		if(enabled) {
+			return new SimpleSearchForm(searchTargetType, enabled, parameterName, parameterValue);
+		}
+		else {
+			return new SimpleSearchForm(searchTargetType);
+		}
 	}
 
-	public String getTargetRequestParameter() {
-		return targetRequestParameter;
+	public String getTargetTypeRequestParam() {
+		return targetTypeRequestParam;
 	}
-	public void setTargetRequestParameter(String targetRequestParameter) {
-		this.targetRequestParameter = targetRequestParameter;
-	}
-
-	public String getSearchByRequestParameter() {
-		return searchByRequestParameter;
-	}
-	public void setSearchByRequestParameter(String searchByRequestParameter) {
-		this.searchByRequestParameter = searchByRequestParameter;
+	public void setTargetTypeRequestParam(String targetTypeRequestParam) {
+		this.targetTypeRequestParam = targetTypeRequestParam;
 	}
 
-	public String getSearchParamRequestParameter() {
-		return searchParamRequestParameter;
+	public String getParameterNameRequestParam() {
+		return parameterNameRequestParam;
 	}
-	public void setSearchParamRequestParameter(String searchParamRequestParameter) {
-		this.searchParamRequestParameter = searchParamRequestParameter;
+	public void setParameterNameRequestParam(String parameterNameRequestParam) {
+		this.parameterNameRequestParam = parameterNameRequestParam;
+	}
+
+	public String getParameterValueRequestParam() {
+		return parameterValueRequestParam;
+	}
+	public void setParameterValueRequestParam(String parameterValueRequestParam) {
+		this.parameterValueRequestParam = parameterValueRequestParam;
 	}
 }
