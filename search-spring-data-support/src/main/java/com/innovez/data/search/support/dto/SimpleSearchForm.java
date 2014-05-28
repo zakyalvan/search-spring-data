@@ -15,8 +15,24 @@ import com.innovez.core.entity.support.search.SearchParameterHolder;
  */
 @SuppressWarnings("serial")
 public class SimpleSearchForm implements SearchParameterHolder, Serializable {
+	/**
+	 * Determine whether search enabled.
+	 */
 	private boolean enabled = false;
+	
+	/**
+	 * Search by field, used for simple search (With one parameter).
+	 */
+	private String searchField;
+	
+	/**
+	 * Search target type.
+	 */
 	private Class<?> target;
+	
+	/**
+	 * Parameter map.
+	 */
 	private Map<String, Object> parameters = new HashMap<String, Object>();
 	
 	public SimpleSearchForm() {}
@@ -30,6 +46,13 @@ public class SimpleSearchForm implements SearchParameterHolder, Serializable {
 	}
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+	
+	public String getSearchField() {
+		return searchField;
+	}
+	public void setSearchField(String searchField) {
+		this.searchField = searchField;
 	}
 	
 	@Override

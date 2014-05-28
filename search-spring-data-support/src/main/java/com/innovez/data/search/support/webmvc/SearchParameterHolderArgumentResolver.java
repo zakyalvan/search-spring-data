@@ -8,6 +8,7 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.support.WebArgumentResolver;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.WebRequest;
@@ -47,14 +48,42 @@ public class SearchParameterHolderArgumentResolver implements WebArgumentResolve
 			return WebArgumentResolver.UNRESOLVED;
 		}
 		
-		SimpleSearchForm simpleSearchForm = new SimpleSearchForm();
 		String target = webRequest.getParameter(targetRequestParameter);
 		String searchBy = webRequest.getParameter(searchByRequestParameter);
 		String searchParameter = webRequest.getParameter(searchParamRequestParameter);
 		
-		Assert.isTrue(StringUtils.hasText((String) target), "No request parameter with name " + targetRequestParameter + " for determining search target type.");
-		Assert.isTrue(StringUtils.hasText((String) searchBy), "No request parameter with name " + searchByRequestParameter + " for determining search field used.");
-		Assert.isTrue(StringUtils.hasText((String) searchParameter), "No request parameter with name " + searchParamRequestParameter + " for determining search parameter value.");
+		try {
+			Assert.isTrue(StringUtils.hasText((String) target), "No request parameter with name " + targetRequestParameter + " for determining search target type.");
+			Assert.isTrue(StringUtils.hasText((String) searchBy), "No request parameter with name " + searchByRequestParameter + " for determining search field used.");
+			Assert.isTrue(StringUtils.hasText((String) searchParameter), "No request parameter with name " + searchParamRequestParameter + " for determining search parameter value.");
+		}
+		catch(IllegalArgumentException iae) {
+			logger.error("One or more required request parameter for search not found in request.");
+			return WebArgumentResolver.UNRESOLVED;
+		}
+		
+		SimpleSearchForm simpleSearchForm = null;
+		
+		/**
+		 * TODO Fix me! This block not usable!
+		 */
+		ModelAttribute modelAttribute = methodParameter.getParameterAnnotation(ModelAttribute.class);
+		boolean modelAttributeAnnotatedParam = false;
+		if(modelAttribute != null) {
+			logger.debug("Method parameter annotated with ModelAttribute, try lookup to session for object SimpleSearchForm.");
+			modelAttributeAnnotatedParam = true;
+			String searchFormName = modelAttribute.value();
+			simpleSearchForm = (SimpleSearchForm) webRequest.getAttribute(searchFormName, WebRequest.SCOPE_SESSION);
+			logger.error("No search form object found at session with name : " + searchFormName);
+		}
+		
+		if(simpleSearchForm == null) {
+			if(modelAttributeAnnotatedParam) {
+				logger.debug("Method parameter annotated with @ModelAttribute, no serach form object found for given attribute name.");
+			}
+			logger.debug("Create fresh search form object.");
+			simpleSearchForm = new SimpleSearchForm();
+		}
 		
 		Expression targetTypeExpression = expressionParser.parseExpression(target);
 		Class<?> targetType = targetTypeExpression.getValue(Class.class);
@@ -65,11 +94,22 @@ public class SearchParameterHolderArgumentResolver implements WebArgumentResolve
 		return simpleSearchForm;
 	}
 
+	public String getTargetRequestParameter() {
+		return targetRequestParameter;
+	}
 	public void setTargetRequestParameter(String targetRequestParameter) {
 		this.targetRequestParameter = targetRequestParameter;
 	}
+
+	public String getSearchByRequestParameter() {
+		return searchByRequestParameter;
+	}
 	public void setSearchByRequestParameter(String searchByRequestParameter) {
 		this.searchByRequestParameter = searchByRequestParameter;
+	}
+
+	public String getSearchParamRequestParameter() {
+		return searchParamRequestParameter;
 	}
 	public void setSearchParamRequestParameter(String searchParamRequestParameter) {
 		this.searchParamRequestParameter = searchParamRequestParameter;

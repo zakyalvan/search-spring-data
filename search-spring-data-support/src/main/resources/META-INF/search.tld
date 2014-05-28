@@ -4,7 +4,7 @@
 
 	<tlib-version>1.0</tlib-version>
 	<short-name>InnovezSearch</short-name>
-	<uri>http://innovez-one.com/spring-data/search</uri>
+	<uri>http://innovez-one.com/spring-data/custom/search</uri>
  
 	<tag>
 		<name>simpleForm</name>
@@ -15,12 +15,30 @@
 			<name>formObject</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
-			<type>com.innovez.web.dto.search.SimpleSearchForm</type>
+			<type>com.innovez.data.search.support.dto.SimpleSearchForm</type>
 		</attribute>
 		<attribute>
 			<name>formUrl</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
+			<type>String</type>
+		</attribute>
+		<attribute>
+			<name>htmlVar</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>String</type>
+		</attribute>
+		<attribute>
+			<name>scriptVar</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>String</type>
+		</attribute>
+		<attribute>
+			<name>hintText</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
 			<type>String</type>
 		</attribute>
 	</tag>

@@ -3,7 +3,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
-<%@ taglib prefix="search" uri="http://innovez-one.com/spring-data/search" %>
+<%@ taglib prefix="search" uri="http://innovez-one.com/spring-data/custom/search" %>
 
 <spring:url value="/" var="baseUrl" />
 <spring:url value="/assets" var="staticAssetsUrl" />
@@ -65,27 +65,11 @@
         <h1>Organization List</h1>
       </div>
       <div class="row">
-        <div class="btn-group col-sm-4">
+        <div class="btn-group col-sm-8">
       	  <a href="${organizationsEndpointUrl}?create" class="btn btn-primary">New Organization</a>
         </div>
         <div class="col-md-4">
-        	<search:simpleForm formObject="${searchOrgnazitionsForm}"/>
-        </div>
-        <div class="col-md-4">
-          <form:form action="${organizationsEndpointUrl}?search" class="form form-inline" role="search" method="post">
-            <div class="input-group">
-              <div class="input-group-btn search-type-selection">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="search-type-selected">Search By</span> <span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                  <li><a href="#">ID</a></li>
-                </ul>
-              </div>
-              <input type="text" class="form-control" placeholder="Keyword" />
-              <span class="input-group-btn">
-                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-              </span>
-            </div>
-          </form:form>
+        	<search:simpleForm formObject="${searchOrgnazitionsForm}" scriptVar="searchScript" />
         </div>
       </div>
       <div class="table-responsive">
@@ -124,5 +108,6 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="${staticAssetsUrl}/js/bootstrap.min.js"></script>
+    ${searchScript}
   </body>
 </html>
