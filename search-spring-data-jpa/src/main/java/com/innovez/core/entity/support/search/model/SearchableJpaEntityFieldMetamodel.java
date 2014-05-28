@@ -5,12 +5,12 @@ import java.io.Serializable;
 import org.springframework.util.Assert;
 
 /**
- * Default implementation of {@link SearchFieldMetamodel}.
+ * Default implementation of {@link SearchableFieldMetamodel}.
  * 
  * @author zakyalvan
  */
 @SuppressWarnings("serial")
-public class EntityPropertySearchFieldMetamodel implements SearchFieldMetamodel, Serializable {
+public class SearchableJpaEntityFieldMetamodel implements SearchableFieldMetamodel, Serializable {
 	private final Class<?> searchableType;
 	private final String searchableTypeName;
 	private final String name;
@@ -18,7 +18,7 @@ public class EntityPropertySearchFieldMetamodel implements SearchFieldMetamodel,
 	private final String fieldTypeName;
 	private final String label;
 	
-	public EntityPropertySearchFieldMetamodel(Class<?> searchableType, String name, Class<?> fieldType, String label) {
+	public SearchableJpaEntityFieldMetamodel(Class<?> searchableType, String name, Class<?> fieldType, String label) {
 		Assert.notNull(searchableType);
 		Assert.notNull(name);
 		Assert.notNull(fieldType);
@@ -80,7 +80,7 @@ public class EntityPropertySearchFieldMetamodel implements SearchFieldMetamodel,
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		EntityPropertySearchFieldMetamodel other = (EntityPropertySearchFieldMetamodel) obj;
+		SearchableJpaEntityFieldMetamodel other = (SearchableJpaEntityFieldMetamodel) obj;
 		if (fieldTypeName == null) {
 			if (other.fieldTypeName != null)
 				return false;

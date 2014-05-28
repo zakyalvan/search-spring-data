@@ -3,6 +3,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
+<%@ taglib prefix="search" uri="http://innovez-one.com/spring-data/search" %>
+
 <spring:url value="/" var="baseUrl" />
 <spring:url value="/assets" var="staticAssetsUrl" />
 <spring:url value="/organizations" var="organizationsEndpointUrl" />
@@ -63,8 +65,11 @@
         <h1>Organization List</h1>
       </div>
       <div class="row">
-        <div class="btn-group col-sm-8">
+        <div class="btn-group col-sm-4">
       	  <a href="${organizationsEndpointUrl}?create" class="btn btn-primary">New Organization</a>
+        </div>
+        <div class="col-md-4">
+        	<search:simpleForm formObject="${searchOrgnazitionsForm}"/>
         </div>
         <div class="col-md-4">
           <form:form action="${organizationsEndpointUrl}?search" class="form form-inline" role="search" method="post">

@@ -15,9 +15,9 @@ import org.springframework.util.Assert;
 public final class SearchableJpaEntityMetamodel implements SearchableMetamodel, Serializable {
 	private final Class<?> searchableType;
 	private final String searchableTypeName;
-	private final Map<String, SearchFieldMetamodel> searchFields;
+	private final Map<String, SearchableFieldMetamodel> searchFields;
 	
-	public SearchableJpaEntityMetamodel(Class<?> searchableType, Map<String, SearchFieldMetamodel> searchFields) {
+	public SearchableJpaEntityMetamodel(Class<?> searchableType, Map<String, SearchableFieldMetamodel> searchFields) {
 		Assert.notNull(searchableType);
 		Assert.notNull(searchFields);
 		
@@ -32,7 +32,7 @@ public final class SearchableJpaEntityMetamodel implements SearchableMetamodel, 
 	}
 
 	@Override
-	public Collection<SearchFieldMetamodel> getSearchFields() {
+	public Collection<SearchableFieldMetamodel> getSearchFields() {
 		return searchFields.values();
 	}
 
@@ -42,7 +42,7 @@ public final class SearchableJpaEntityMetamodel implements SearchableMetamodel, 
 	}
 
 	@Override
-	public SearchFieldMetamodel getSearchField(String fieldName) {
+	public SearchableFieldMetamodel getSearchField(String fieldName) {
 		Assert.isTrue(hasSearchField(fieldName), "Given fieldName parameter is not found as searchable field.");
 		return searchFields.get(fieldName);
 	}

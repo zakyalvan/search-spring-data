@@ -24,16 +24,18 @@ public class Organization {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ORG_ID_SEQ_GENERATOR")
 	private Integer id;
 	
-	@SearchField
+	@SearchField(label="Name")
 	@NotBlank
 	@Column(name="name")
 	private String name;
 	
+	@SearchField(label="Email Address")
 	@Email
 	@NotBlank
 	@Column(name="email")
 	private String email;
 	
+	@SearchField(label="Contact Person")
 	@NotBlank
 	@Column(name="contact_person")
 	private String contactPerson;

@@ -14,6 +14,7 @@ import javax.persistence.metamodel.EntityType;
 import org.apache.log4j.Logger;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import com.innovez.core.entity.support.search.annotation.SearchField;
 import com.innovez.core.entity.support.search.annotation.Searchable;
@@ -45,7 +46,7 @@ public class SearchableAnnotatedJpaEntityMetamodelReader implements SearchMetamo
 		/**
 		 * Searchable fields on target entity.
 		 */		
-		Map<String, SearchFieldMetamodel> searchFieldMetamodels = new HashMap<String, SearchFieldMetamodel>();
+		Map<String, SearchableFieldMetamodel> searchFieldMetamodels = new HashMap<String, SearchableFieldMetamodel>();
 		
 		EntityType<T> entityType = entityManager.getMetamodel().entity(target);
 		for(Attribute<? super T, ?> attribute : entityType.getAttributes()) {
@@ -61,11 +62,11 @@ public class SearchableAnnotatedJpaEntityMetamodelReader implements SearchMetamo
 					 * Process for basic type.
 					 */
 					if(persistentAttributeType == PersistentAttributeType.BASIC) {
-						EntityPropertySearchFieldMetamodel searchFieldMetamodel = new EntityPropertySearchFieldMetamodel(
-								target,
-								attribute.getName(), 
-								attribute.getJavaType(), 
-								searchField.label());
+						String name = attribute.getName();
+						String label = StringUtils.hasText(searchField.label()) ? searchField.label() : target.getSimpleName() + "." + name + "." + "label";
+						Class<?> type = attribute.getJavaType();
+						
+						SearchableJpaEntityFieldMetamodel searchFieldMetamodel = new SearchableJpaEntityFieldMetamodel(target, name, type, label);
 						searchFieldMetamodels.put(searchFieldMetamodel.getName(), searchFieldMetamodel);
 					}
 					/**

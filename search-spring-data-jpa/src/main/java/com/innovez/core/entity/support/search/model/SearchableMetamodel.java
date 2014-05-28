@@ -20,7 +20,7 @@ public interface SearchableMetamodel {
 	 * 
 	 * @return
 	 */
-	Collection<SearchFieldMetamodel> getSearchFields();
+	Collection<SearchableFieldMetamodel> getSearchFields();
 	
 	/**
 	 * Ask whether search metamodel contains given search fields.
@@ -36,5 +36,5 @@ public interface SearchableMetamodel {
 	 * @param fieldName
 	 * @return
 	 */
-	SearchFieldMetamodel getSearchField(String fieldName);
+	SearchableFieldMetamodel getSearchField(String fieldName);
 }

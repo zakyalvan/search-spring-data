@@ -9,17 +9,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.innovez.search.samples.entity.Organization;
 import com.innovez.search.samples.service.OrganizationService;
+import com.innovez.web.dto.search.SimpleSearchForm;
 
 @Controller
 @RequestMapping("/organizations")
+@SessionAttributes(value={OrganizationController.SEARCH_FORM_NAME})
 public class OrganizationController {
+	public static final String SEARCH_FORM_NAME = "searchOrgnazitionsForm";
+	
 	private Logger logger = Logger.getLogger(OrganizationController.class);
 	
 	@Autowired
@@ -43,16 +47,23 @@ public class OrganizationController {
 		return "redirect:/organizations";
 	}
 	
+	@ModelAttribute(SEARCH_FORM_NAME)
+	public SimpleSearchForm prepareSimpleSearchForm() {
+		logger.debug("============== Prepare simple search form.");
+		return new SimpleSearchForm(Organization.class);
+	}
+	
 	@RequestMapping(value={"", "/"}, method=RequestMethod.GET)
 	public String list(@RequestParam(value="page", defaultValue="0") Integer page, @RequestParam(value="size", defaultValue="10")Integer size, Model model) {
 		logger.debug("Retrieve list of organization");
 		Page<Organization> pagedDataList = organizationService.getPagedOrganizationsList(page, size);
 		model.addAttribute("pagedDataList", pagedDataList);
+
 		return "organizations/list";
 	}
 	
 	@RequestMapping(value={"", "/"}, params={"search"}, method=RequestMethod.POST)
-	public String search() {
+	public String search(@ModelAttribute(SEARCH_FORM_NAME) SimpleSearchForm simpleSearchForm, BindingResult bindingResult) {
 		logger.debug("Handle search organizations");
 		return "redirect:/organizations";
 	}

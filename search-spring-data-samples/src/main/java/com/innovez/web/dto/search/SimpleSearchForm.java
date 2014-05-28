@@ -1,8 +1,10 @@
-package com.innovez.search.samples.dto;
+package com.innovez.web.dto.search;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.util.Assert;
 
 import com.innovez.core.entity.support.search.SearchParameterHolder;
 
@@ -17,6 +19,12 @@ public class SimpleSearchForm implements SearchParameterHolder, Serializable {
 	private Class<?> target;
 	private Map<String, Object> parameters = new HashMap<String, Object>();
 	
+	public SimpleSearchForm() {}
+	public SimpleSearchForm(Class<?> target) {
+		Assert.notNull(target, "Target type parameter should not be null");
+		this.target = target;
+	}
+	
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -28,7 +36,8 @@ public class SimpleSearchForm implements SearchParameterHolder, Serializable {
 	public Class<?> getTarget() {
 		return target;
 	}
-	public void setTarger(Class<?> target) {
+	public void setTarget(Class<?> target) {
+		Assert.notNull(target, "Target type parameter should not be null");
 		this.target = target;
 	}
 	
