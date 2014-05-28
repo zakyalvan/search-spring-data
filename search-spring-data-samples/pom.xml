@@ -25,6 +25,10 @@
 			<groupId>com.innovez</groupId>
 			<artifactId>search-spring-data-jpa</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.innovez</groupId>
+			<artifactId>search-spring-data-support</artifactId>
+		</dependency>
 		
 		<!-- Web Dependencies -->
 			<dependency>

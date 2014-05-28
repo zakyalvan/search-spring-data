@@ -7,6 +7,7 @@
 	<modules>
 		<module>search-spring-data-jpa</module>
 		<module>search-spring-data-samples</module>
+		<module>search-spring-data-support</module>
 	</modules>
 	
 	<properties>
@@ -42,6 +43,11 @@
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>search-spring-data-jpa</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>search-spring-data-support</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			

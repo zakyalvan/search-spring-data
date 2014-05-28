@@ -32,11 +32,11 @@ public class OrganizationServiceTest {
 		organizationService.getPagedOrganizationsList(0, 10, parameters);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public void testRetrievePagedOrganizationListWithInvalidParameter() {
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("name", "service prov");
-		parameters.put("test", "bla bla bla");
-		organizationService.getPagedOrganizationsList(0, 10, parameters);
-	}
+//	@Test(expected=IllegalArgumentException.class)
+//	public void testRetrievePagedOrganizationListWithInvalidParameter() {
+//		Map<String, Object> parameters = new HashMap<String, Object>();
+//		parameters.put("name", "service prov");
+//		parameters.put("test", "bla bla bla");
+//		organizationService.getPagedOrganizationsList(0, 10, parameters);
+//	}
 }

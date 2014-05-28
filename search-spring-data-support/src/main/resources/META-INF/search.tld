@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd">
 
 	<tlib-version>1.0</tlib-version>
-	<short-name>Search</short-name>
+	<short-name>InnovezSearch</short-name>
 	<uri>http://innovez-one.com/spring-data/search</uri>
  
 	<tag>
 		<name>simpleForm</name>
-		<tag-class>com.innovez.web.taglib.SimpleSearchFormRendererTag</tag-class>
+		<tag-class>com.innovez.data.search.support.taglib.SimpleSearchFormRendererTag</tag-class>
 		<body-content>empty</body-content>
 
 		<attribute>
