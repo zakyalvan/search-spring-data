@@ -1,0 +1,24 @@
+package com.innovez.core.entity.support.search;
+
+import java.util.Map;
+
+/**
+ * Contract for type which hold search parameters.
+ * 
+ * @author zakyalvan
+ */
+public interface SearchParameterHolder {
+	/**
+	 * Retrieve search target type.
+	 * 
+	 * @return
+	 */
+	Class<?> getTarget();
+	
+	/**
+	 * Retrieve parameters.
+	 * 
+	 * @return
+	 */
+	Map<String, Object> getParameters();
+}
