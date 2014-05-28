@@ -75,7 +75,13 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 		StringBuilder htmlFormBuilder = new StringBuilder();
 		htmlFormBuilder.append("<form id='search-form' action='" + formUrl + "' class='form form-inline' role='search' method='post'>");
 		htmlFormBuilder.append("<input type='hidden' name='_simpleSearchForm_target' id='search-target' value='T(" + targetType.getName() + ")'>");
-		htmlFormBuilder.append("<input type='hidden' name='_simpleSearchForm_searchBy' id='parameter-name'>");
+		
+		/**
+		 * Parameter name on the form.
+		 */
+		String parameterName = StringUtils.hasText(formObject.getParameterName()) ? formObject.getParameterName() : "";
+		htmlFormBuilder.append("<input type='hidden' value='" + parameterName + "' name='_simpleSearchForm_searchBy' id='parameter-name'>");
+		
 		htmlFormBuilder.append("<div class='input-group'>");
 		htmlFormBuilder.append("<div class='input-group-btn search-type-selection'>");
 		
@@ -100,20 +106,23 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 		for(SearchableFieldMetamodel field : searchableModel.getSearchFields()) {
 			String name = field.getName();
 			String label = applicationContext.getMessage(field.getLabel(), new Object[] {}, field.getLabel(), Locale.ENGLISH);
-			htmlFormBuilder.append("<li><a href='#' data-parameter-name='" + name + "'>" + label + "</a></li>\n");
+			htmlFormBuilder.append("<li><a href='#' data-parameter-name='" + name + "'>" + label + "</a></li>");
 		}
 		
-		htmlFormBuilder.append("</ul>\n");
-		htmlFormBuilder.append("</div>\n");
+		htmlFormBuilder.append("</ul>");
+		htmlFormBuilder.append("</div>");
 		
+		/**
+		 * Parameter value on the form.
+		 */
 		String parameterValue = StringUtils.hasText((String) formObject.getParameterValue()) ? (String) formObject.getParameterValue() : "";
-		htmlFormBuilder.append("<input type='text' value='" + parameterValue + "' name='_simpleSearchForm_searchParameter' class='form-control' placeholder='Keyword' />\n");
+		htmlFormBuilder.append("<input type='text' value='" + parameterValue + "' name='_simpleSearchForm_searchParameter' class='form-control' placeholder='Keyword' />");
 		
-		htmlFormBuilder.append("<span class='input-group-btn'>\n");
-		htmlFormBuilder.append("<button class='btn btn-primary' type='submit'><span class='glyphicon glyphicon-search'></span></button>\n");
-		htmlFormBuilder.append("</span>\n");
-		htmlFormBuilder.append("</div>\n");
-		htmlFormBuilder.append("</form>\n");
+		htmlFormBuilder.append("<span class='input-group-btn'>");
+		htmlFormBuilder.append("<button class='btn btn-primary' type='submit'><span class='glyphicon glyphicon-search'></span></button>");
+		htmlFormBuilder.append("</span>");
+		htmlFormBuilder.append("</div>");
+		htmlFormBuilder.append("</form>");
 		
 		if(StringUtils.hasText(htmlVar)) {
 			getJspContext().setAttribute(htmlVar, htmlFormBuilder.toString(), PageContext.PAGE_SCOPE);
@@ -128,7 +137,10 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 		scriptFormBuilder.append("$(function() {");
 		scriptFormBuilder.append("$(\"div.search-type-selection ul li a\").click(function(e) {");
 		scriptFormBuilder.append("e.preventDefault();");
-		// Look at data-parameter-name of each <a> element in drop-down list above.
+		
+		/**
+		 *  Look at data-parameter-name of each <a> element in drop-down list above.
+		 */
 		scriptFormBuilder.append("$(\"form#search-form input#parameter-name\").val($(this).data(\"parameter-name\"));");
 		scriptFormBuilder.append("$(\"div.search-type-selection button span.search-type-selected\").html($(this).html());");
 		scriptFormBuilder.append("});");

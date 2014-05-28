@@ -20,7 +20,7 @@ import com.innovez.core.entity.support.search.annotation.SearchField;
 import com.innovez.core.entity.support.search.annotation.Searchable;
 
 /**
- * Metamodel reader for {@link Searchable} annoteted entity type.
+ * Metamodel reader for {@link Searchable} annotated entity type.
  * 
  * @author zakyalvan
  */

@@ -9,7 +9,7 @@ import java.util.Collection;
  */
 public interface SearchableMetamodel {
 	/**
-	 * Retrieve actual type of searchable type.
+	 * Retrieve type of searchable type.
 	 * 
 	 * @return
 	 */
