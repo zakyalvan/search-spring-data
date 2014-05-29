@@ -23,5 +23,5 @@ public @interface Searchable {
 	 * 
 	 * @return
 	 */
-	SearchField[] fields() default {};
+	SearchableField[] fields() default {};
 }

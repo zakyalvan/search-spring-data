@@ -75,7 +75,9 @@ public class SearchParameterHolderArgumentResolver implements WebArgumentResolve
 		boolean enabled = StringUtils.hasText(parameterName) && StringUtils.hasText(parameterValue);
 		
 		if(enabled) {
-			return new SimpleSearchForm(searchTargetType, enabled, parameterName, parameterValue);
+			SimpleSearchForm simpleSearchForm = new SimpleSearchForm(searchTargetType, enabled, parameterName, parameterValue);
+			simpleSearchForm.getParameters().put(parameterName, parameterValue);
+			return simpleSearchForm;
 		}
 		else {
 			return new SimpleSearchForm(searchTargetType);

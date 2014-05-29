@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface SearchField {
+public @interface SearchableField {
 	/**
 	 * Name of search-able field. If this annotation applied to field, this attribute will be ignored.
 	 * 

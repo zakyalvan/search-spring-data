@@ -28,8 +28,8 @@ public aspect SearchParamsMethodArgumentAdvisor {
 	 * 
 	 * @param searchParams
 	 */
-	pointcut withSearchParamsAnnotatedArgument(Object targetObject) : execution(* *.*(..,@SearchParams (Map<String,Object>+),..)) && target(targetObject);
-	before(Object targetObject) :  withSearchParamsAnnotatedArgument(targetObject) {
+	pointcut withSearchParamsAnnotatedArgument(Object targetObject, Map<String, Object> parameters) : execution(* *.*(.., @SearchParams (Map<String,Object>))) && args(.., parameters) && target(targetObject);
+	Object around(Object targetObject, Map<String, Object> parameters) :  withSearchParamsAnnotatedArgument(targetObject, parameters) {
 		logger.debug("Before execution of method with @SearchParams annotated argument, check whether validate search parameters.");
 		
 		Object[] methodArguments = thisJoinPoint.getArgs();
@@ -53,12 +53,16 @@ public aspect SearchParamsMethodArgumentAdvisor {
 					SearchParams searchParamsAnnotation = (SearchParams) methodArgumentAnnotation;
 					if(searchParamsAnnotation.validate()) {
 						logger.debug("Validation on SearchParams annotated method argument of method " + targetObject.getClass().getName() + "." + method.getName() + " is enabled. Validate search parameters.");
-						Assert.isTrue(searchManager.isValidSearchParameters(searchParamsAnnotation.target(), searchParameters), "Given search parameters " + searchParameters + " is not valid for target type " + searchParamsAnnotation.target());
-						
-						
+						Assert.isTrue(searchManager.isValidSearchParameters(searchParamsAnnotation.target(), searchParameters), "Given search parameters " + searchParameters + " is not valid for target type " + searchParamsAnnotation.target());				
 					}
+					
+					// Found SearchParams annotated argument, break process.
+					break;
 				}
 			}
 		}
+		
+		logger.debug("Proceed call with parameters : " + parameters);
+		return proceed(targetObject, parameters);
 	}
 }

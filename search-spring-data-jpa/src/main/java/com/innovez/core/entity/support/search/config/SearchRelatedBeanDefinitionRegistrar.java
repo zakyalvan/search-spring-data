@@ -57,7 +57,7 @@ public class SearchRelatedBeanDefinitionRegistrar implements ImportBeanDefinitio
 			registry.registerBeanDefinition("searchParamsMethodArgumentAdvisor", searchParamsMethodArgumentAdvisor);
 			
 			/**
-			 * Register cache manager abstraction.
+			 * Register cache manager abstraction, if caching enabled.
 			 */
 		}
 	}

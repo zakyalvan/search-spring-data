@@ -54,7 +54,7 @@ public class JpaRepoBackedOrganizationService implements OrganizationService {
 		Assert.notNull(page, "Page parameter should not be null.");
 		Assert.notNull(size, "Size parameter should not be null.");
 		
-		logger.debug("Retrieve paged list of organization with search parameters.");
+		logger.debug("Retrieve paged list of organization with search parameters : " + parameters);
 		Sort sort = new Sort(Direction.ASC, "name");
 		PageRequest pageRequest = new PageRequest(page, size, sort);
 		return organizationRepository.findAll(pageRequest);

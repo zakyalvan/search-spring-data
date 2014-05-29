@@ -57,15 +57,24 @@ public class OrganizationController {
 	@RequestMapping(value={"", "/"}, method=RequestMethod.GET)
 	public String list(@ModelAttribute(SEARCH_FORM_NAME) SimpleSearchForm searchForm, @RequestParam(value="page", defaultValue="0") Integer page, @RequestParam(value="size", defaultValue="10")Integer size, Model model) {
 		logger.debug("Retrieve list of organization");
-		Page<Organization> pagedDataList = organizationService.getPagedOrganizationsList(page, size);
-		model.addAttribute("pagedDataList", pagedDataList);
-
+		
+		if(searchForm.isEnabled()) {
+			logger.debug("Search enabled, retrieve paged data list with search parameters.");
+			Page<Organization> pagedDataList = organizationService.getPagedOrganizationsList(page, size, searchForm.getParameters());
+			model.addAttribute("pagedDataList", pagedDataList);
+		}
+		else {
+			logger.debug("Search disabled.");
+			Page<Organization> pagedDataList = organizationService.getPagedOrganizationsList(page, size);
+			model.addAttribute("pagedDataList", pagedDataList);
+		}
+		
 		return "organizations/list";
 	}
 	
 	@RequestMapping(value={"", "/"}, params={"search"}, method=RequestMethod.POST)
 	public String search(@SearchTarget(Organization.class) SimpleSearchForm searchForm, Model model) {
-		logger.debug("Handle search with target : " + searchForm.getSearchTarget());
+		logger.debug("Handle search with target : " + searchForm.getSearchTarget() + " and parameters : " + searchForm.getParameters());
 		model.addAttribute(SEARCH_FORM_NAME, searchForm);
 		return "redirect:/organizations";
 	}

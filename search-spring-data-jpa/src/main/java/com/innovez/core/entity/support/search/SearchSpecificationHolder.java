@@ -1,11 +1,26 @@
 package com.innovez.core.entity.support.search;
 
-public interface SearchSpecificationHolder {
+import java.util.Map;
+
+import org.springframework.data.jpa.domain.Specification;
+
+/**
+ * Specification holder, this interface tightly bound or specific to spring-data-jpa project.
+ * 
+ * @author zakyalvan
+ *
+ * @param <T>
+ */
+public interface SearchSpecificationHolder<T> extends SearchParameterHolder {
 	/**
-	 * Search target type.
+	 * Single final specification.
+	 */
+	public static final String SINGLE_FINAL_SPECIFICATION = "single-final-specification";
+	
+	/**
+	 * Retrieve all specifications, keyed by field name.
 	 * 
 	 * @return
 	 */
-	Class<?> getSearchTarget();
-	
+	Map<String, Specification<T>> getSpecifications();
 }

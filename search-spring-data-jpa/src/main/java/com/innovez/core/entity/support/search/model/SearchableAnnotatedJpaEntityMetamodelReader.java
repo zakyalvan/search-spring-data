@@ -16,7 +16,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import com.innovez.core.entity.support.search.annotation.SearchField;
+import com.innovez.core.entity.support.search.annotation.SearchableField;
 import com.innovez.core.entity.support.search.annotation.Searchable;
 
 /**
@@ -45,7 +45,7 @@ public class SearchableAnnotatedJpaEntityMetamodelReader implements SearchMetamo
 		
 		/**
 		 * Searchable fields on target entity.
-		 */		
+		 */	
 		Map<String, SearchableFieldMetamodel> searchFieldMetamodels = new HashMap<String, SearchableFieldMetamodel>();
 		
 		EntityType<T> entityType = entityManager.getMetamodel().entity(target);
@@ -53,10 +53,10 @@ public class SearchableAnnotatedJpaEntityMetamodelReader implements SearchMetamo
 			Field field = target.getDeclaredField(attribute.getName());
 
 			if(field != null) {
-				SearchField searchField = AnnotationUtils.getAnnotation(field, SearchField.class);
+				SearchableField searchField = AnnotationUtils.getAnnotation(field, SearchableField.class);
 				if(searchField != null) {
 					PersistentAttributeType persistentAttributeType = attribute.getPersistentAttributeType();
-					logger.debug("Found SearchField property on " + target.getName() + ", with name : " + attribute.getName() + " and PersistenceAttributeType : " + persistentAttributeType);
+					logger.debug("Found SearchField property (" + attribute.getClass().getName() + ") on " + target.getName() + ", with name : " + attribute.getName() + " and PersistenceAttributeType : " + persistentAttributeType);
 					
 					/**
 					 * Process for basic type.
@@ -70,13 +70,13 @@ public class SearchableAnnotatedJpaEntityMetamodelReader implements SearchMetamo
 						searchFieldMetamodels.put(searchFieldMetamodel.getName(), searchFieldMetamodel);
 					}
 					/**
-					 * Process for many-to-one or one-to-one type.
+					 * Process for many-to-one type.
 					 */
-					else if(persistentAttributeType == PersistentAttributeType.MANY_TO_ONE || persistentAttributeType == PersistentAttributeType.ONE_TO_ONE) {
+					else if(persistentAttributeType == PersistentAttributeType.MANY_TO_ONE) {
 						/**
 						 * TODO How to remove cyclic read?!
 						 */
-						SearchableMetamodel searchableMetamodel = read(attribute.getJavaType());
+						//SearchableMetamodel searchableMetamodel = read(attribute.getJavaType());
 						
 					}
 					/**
@@ -90,5 +90,10 @@ public class SearchableAnnotatedJpaEntityMetamodelReader implements SearchMetamo
 		}
 		
 		return new SearchableJpaEntityMetamodel(target, searchFieldMetamodels);
+	}
+
+	@Override
+	public <T> SearchableMetamodel read(Class<T> target, String... excludeFields) throws Exception {
+		return null;
 	}
 }
