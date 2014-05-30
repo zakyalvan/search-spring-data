@@ -41,5 +41,11 @@
 			<rtexprvalue>false</rtexprvalue>
 			<type>String</type>
 		</attribute>
+		<attribute>
+			<name>placeholderText</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>String</type>
+		</attribute>
 	</tag>
 </taglib>

@@ -15,7 +15,7 @@ public interface SearchSpecificationHolder<T> extends SearchParameterHolder {
 	/**
 	 * Single final specification.
 	 */
-	public static final String SINGLE_FINAL_SPECIFICATION = "single-final-specification";
+	public static final String FINAL_SPECIFICATION = "single-final-specification";
 	
 	/**
 	 * Retrieve all specifications, keyed by field name.

@@ -8,11 +8,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import com.innovez.core.entity.support.search.SearchSpecificationHolder;
 import com.innovez.core.entity.support.search.annotation.SearchParams;
 import com.innovez.search.samples.entity.Organization;
 import com.innovez.search.samples.repository.OrganizationRepository;
@@ -55,8 +57,13 @@ public class JpaRepoBackedOrganizationService implements OrganizationService {
 		Assert.notNull(size, "Size parameter should not be null.");
 		
 		logger.debug("Retrieve paged list of organization with search parameters : " + parameters);
+		
 		Sort sort = new Sort(Direction.ASC, "name");
 		PageRequest pageRequest = new PageRequest(page, size, sort);
-		return organizationRepository.findAll(pageRequest);
+		
+		@SuppressWarnings("unchecked")
+		Specification<Organization> specification = (Specification<Organization>) parameters.get(SearchSpecificationHolder.FINAL_SPECIFICATION);
+		
+		return organizationRepository.findAll(specification, pageRequest);
 	}
 }

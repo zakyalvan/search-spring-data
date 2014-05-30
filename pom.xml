@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.innovez</groupId>
 	<artifactId>search-spring-data</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.5.0</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>search-spring-data-jpa</module>

@@ -1,7 +1,6 @@
 package com.innovez.data.search.support.taglib;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -9,6 +8,7 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -24,6 +24,7 @@ import com.innovez.data.search.support.dto.SimpleSearchForm;
  */
 public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 	public static final String DEFAULT_SEARCH_HINT_TEXT = "Search By";
+	public static final String DEFAULT_SEARCH_PLACEHOLDER_TEXT = "Search Keyword";
 	
 	private Logger logger = Logger.getLogger(SimpleSearchFormRendererTag.class);
 	
@@ -38,19 +39,24 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 	private String formUrl;
 	
 	/**
-	 * 
+	 * Page context variable, container for html form, if not given, the html will be rendered in place of tag declaration.
 	 */
 	private String htmlVar;
 	
 	/**
-	 * 
+	 * Page context variable, container for javascript, if not given, the script will be rendered in place of tag declaration.
 	 */
 	private String scriptVar;
 	
 	/**
-	 * 
+	 * Search hint text, text displayed as label for search field.
 	 */
 	private String hintText = DEFAULT_SEARCH_HINT_TEXT;
+	
+	/**
+	 * Search field place holder text.
+	 */
+	private String placeholderText = DEFAULT_SEARCH_PLACEHOLDER_TEXT;
 	
 	@Override
 	public void doTag() throws JspException, IOException {
@@ -85,17 +91,24 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 		htmlFormBuilder.append("<div class='input-group'>");
 		htmlFormBuilder.append("<div class='input-group-btn search-type-selection'>");
 		
-		String selectedSearchField = applicationContext.getMessage(hintText, new Object[] {}, hintText, Locale.ENGLISH);
+		/**
+		 * Default label for search field selection.
+		 */
+		String selectedSearchField = hintText;
 		if(formObject.isEnabled()) {
 			String searchField = formObject.getParameterName();
 			if(StringUtils.hasText(searchField)) {
-				selectedSearchField = applicationContext.getMessage(
-						searchableModel.getSearchField(searchField).getLabel(), 
-						new Object[] {},
-						searchableModel.getSearchField(searchField).getLabel(), 
-						Locale.ENGLISH);
+				selectedSearchField = searchableModel.getSearchField(searchField).getLabel();
 			}
 		}
+		/**
+		 * Resolve to message source, if not dclared in message source, use given text.
+		 */
+		selectedSearchField = applicationContext.getMessage(
+				selectedSearchField, 
+				new Object[] {}, 
+				selectedSearchField, 
+				LocaleContextHolder.getLocale());
 		
 		htmlFormBuilder.append("<button type='button' class='btn btn-default dropdown-toggle' data-toggle='dropdown'><span class='search-type-selected'>" + selectedSearchField + "</span> <span class='caret'></span></button>\n");
 		htmlFormBuilder.append("<ul class='dropdown-menu'>\n");
@@ -105,7 +118,11 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 		 */
 		for(SearchableFieldMetamodel field : searchableModel.getSearchFields()) {
 			String name = field.getName();
-			String label = applicationContext.getMessage(field.getLabel(), new Object[] {}, field.getLabel(), Locale.ENGLISH);
+			String label = applicationContext.getMessage(
+					field.getLabel(), 
+					new Object[] {}, 
+					field.getLabel(), 
+					LocaleContextHolder.getLocale());
 			htmlFormBuilder.append("<li><a href='#' data-parameter-name='" + name + "'>" + label + "</a></li>");
 		}
 		
@@ -116,7 +133,13 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 		 * Parameter value on the form.
 		 */
 		String parameterValue = StringUtils.hasText((String) formObject.getParameterValue()) ? (String) formObject.getParameterValue() : "";
-		htmlFormBuilder.append("<input type='text' value='" + parameterValue + "' name='_simpleSearchForm_searchParameter' class='form-control' placeholder='Keyword' />");
+		String keywordPlaceholder = 
+				applicationContext.getMessage(
+						placeholderText, 
+						new Object[] {}, 
+						placeholderText, 
+						LocaleContextHolder.getLocale());
+		htmlFormBuilder.append("<input type='text' value='" + parameterValue + "' name='_simpleSearchForm_searchParameter' class='form-control' placeholder='" + keywordPlaceholder + "' />");
 		
 		htmlFormBuilder.append("<span class='input-group-btn'>");
 		htmlFormBuilder.append("<button class='btn btn-primary' type='submit'><span class='glyphicon glyphicon-search'></span></button>");
@@ -161,7 +184,7 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 	public void setFormObject(SimpleSearchForm formObject) {
 		this.formObject = formObject;
 	}
-		
+
 	public String getFormUrl() {
 		return formUrl;
 	}
@@ -188,6 +211,13 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 	}
 	public void setHintText(String hintText) {
 		this.hintText = hintText;
+	}
+	
+	public String getPlaceholderText() {
+		return placeholderText;
+	}
+	public void setPlaceholderText(String placeholderText) {
+		this.placeholderText = placeholderText;
 	}
 
 	private ApplicationContext getApplicationContext() {
