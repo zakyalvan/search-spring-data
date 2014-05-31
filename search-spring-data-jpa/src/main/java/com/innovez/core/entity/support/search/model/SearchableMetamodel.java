@@ -7,14 +7,7 @@ import java.util.Collection;
  * 
  * @author zakyalvan
  */
-public interface SearchableMetamodel {
-	/**
-	 * Retrieve type of searchable type.
-	 * 
-	 * @return
-	 */
-	Class<?> getSearchableType();
-	
+public interface SearchableMetamodel extends SearchableTypeContainer {
 	/**
 	 * Retrieve all search fields.
 	 * 

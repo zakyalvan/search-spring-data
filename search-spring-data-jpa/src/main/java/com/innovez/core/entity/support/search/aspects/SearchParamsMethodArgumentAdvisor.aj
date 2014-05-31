@@ -116,7 +116,7 @@ public aspect SearchParamsMethodArgumentAdvisor {
 			
 			logger.debug("Build specification for field : " + fieldMetamodel.getName() + " with type : " + fieldMetamodel.getFieldType());
 			
-			// If string, using equal.
+			// If string, using 'like' clause.
 			if(String.class.isAssignableFrom(fieldMetamodel.getFieldType())) {
 				Specification<T> singleSpecification = new Specification<T>() {
 					@Override

@@ -5,14 +5,7 @@ package com.innovez.core.entity.support.search.model;
  * 
  * @author zakyalvan
  */
-public interface SearchableFieldMetamodel {
-	/**
-	 * Retrieve appropriate containing type of this field meta-model.
-	 * 
-	 * @return
-	 */
-	Class<?> getSearchableType();
-	
+public interface SearchableFieldMetamodel extends SearchableTypeContainer {
 	/**
 	 * Retrieve name of searchable field.
 	 * 
