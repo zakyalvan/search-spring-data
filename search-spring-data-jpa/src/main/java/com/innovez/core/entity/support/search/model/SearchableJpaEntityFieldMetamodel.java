@@ -17,8 +17,9 @@ public class SearchableJpaEntityFieldMetamodel implements SearchableFieldMetamod
 	private final Class<?> fieldType;
 	private final String fieldTypeName;
 	private final String label;
+	private final int order;
 	
-	public SearchableJpaEntityFieldMetamodel(Class<?> searchableType, String name, Class<?> fieldType, String label) {
+	public SearchableJpaEntityFieldMetamodel(Class<?> searchableType, String name, Class<?> fieldType, String label, int order) {
 		Assert.notNull(searchableType);
 		Assert.notNull(name);
 		Assert.notNull(fieldType);
@@ -30,6 +31,7 @@ public class SearchableJpaEntityFieldMetamodel implements SearchableFieldMetamod
 		this.fieldType = fieldType;
 		this.fieldTypeName = fieldType.getName();
 		this.label = label;
+		this.order = order;
 	}
 
 	@Override
@@ -50,6 +52,11 @@ public class SearchableJpaEntityFieldMetamodel implements SearchableFieldMetamod
 	@Override
 	public String getLabel() {
 		return label;
+	}
+	
+	@Override
+	public int getOrder() {
+		return order;
 	}
 
 	@Override

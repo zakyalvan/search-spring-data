@@ -1,11 +1,13 @@
 package com.innovez.core.entity.support.search.model;
 
+import org.springframework.core.Ordered;
+
 /**
  * Metamodel for search field.
  * 
  * @author zakyalvan
  */
-public interface SearchableFieldMetamodel extends SearchableTypeContainer {
+public interface SearchableFieldMetamodel extends SearchableTypeContainer, Ordered {
 	/**
 	 * Retrieve name of searchable field.
 	 * 

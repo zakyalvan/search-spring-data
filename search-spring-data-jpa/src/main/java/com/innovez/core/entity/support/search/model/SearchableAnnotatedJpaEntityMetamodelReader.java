@@ -65,8 +65,9 @@ public class SearchableAnnotatedJpaEntityMetamodelReader implements SearchMetamo
 						String name = attribute.getName();
 						String label = StringUtils.hasText(searchField.label()) ? searchField.label() : target.getSimpleName() + "." + name + "." + "label";
 						Class<?> type = attribute.getJavaType();
+						int order = searchField.order();
 						
-						SearchableJpaEntityFieldMetamodel searchFieldMetamodel = new SearchableJpaEntityFieldMetamodel(target, name, type, label);
+						SearchableJpaEntityFieldMetamodel searchFieldMetamodel = new SearchableJpaEntityFieldMetamodel(target, name, type, label, order);
 						searchFieldMetamodels.put(searchFieldMetamodel.getName(), searchFieldMetamodel);
 					}
 					/**

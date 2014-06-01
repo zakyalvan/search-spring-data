@@ -24,6 +24,8 @@ import com.innovez.data.search.support.dto.SimpleSearchForm;
  */
 public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 	public static final String DEFAULT_SEARCH_HINT_TEXT = "Search By";
+	
+	public static final String DEFAULT_SEARCH_PLACEHOLDER_CODE = "commons.searchField.placeholder.code";
 	public static final String DEFAULT_SEARCH_PLACEHOLDER_TEXT = "Search Keyword";
 	
 	private Logger logger = Logger.getLogger(SimpleSearchFormRendererTag.class);
@@ -94,8 +96,11 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 		/**
 		 * Default label for search field selection.
 		 */
+		String searchFieldSelectionClass = "btn btn-default";
 		String selectedSearchField = hintText;
+		
 		if(formObject.isEnabled()) {
+			searchFieldSelectionClass = "btn btn-success";
 			String searchField = formObject.getParameterName();
 			if(StringUtils.hasText(searchField)) {
 				selectedSearchField = searchableModel.getSearchField(searchField).getLabel();
@@ -110,7 +115,8 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 				selectedSearchField, 
 				LocaleContextHolder.getLocale());
 		
-		htmlFormBuilder.append("<button type='button' class='btn btn-default dropdown-toggle' data-toggle='dropdown'><span class='search-type-selected'>" + selectedSearchField + "</span> <span class='caret'></span></button>\n");
+		
+		htmlFormBuilder.append("<button type='button' class='" + searchFieldSelectionClass + " dropdown-toggle' data-toggle='dropdown'><span class='search-type-selected'>" + selectedSearchField + "</span> <span class='caret'></span></button>\n");
 		htmlFormBuilder.append("<ul class='dropdown-menu'>\n");
 		
 		/**

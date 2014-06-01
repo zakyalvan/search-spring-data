@@ -32,18 +32,18 @@ public class Organization implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ORG_ID_SEQ_GENERATOR")
 	private Integer id;
 	
-	@SearchableField(label="Name")
+	@SearchableField(label="Name", order=1)
 	@NotBlank
 	@Column(name="name")
 	private String name;
 	
-	@SearchableField(label="Email Address")
+	@SearchableField(label="Email Address", order=2)
 	@Email
 	@NotBlank
 	@Column(name="email")
 	private String email;
 	
-	@SearchableField(label="Contact Person")
+	@SearchableField(label="Contact Person", order=3)
 	@NotBlank
 	@Column(name="contact_person")
 	private String contactPerson;

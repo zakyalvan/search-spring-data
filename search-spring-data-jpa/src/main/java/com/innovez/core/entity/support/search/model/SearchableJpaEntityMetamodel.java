@@ -1,9 +1,13 @@
 package com.innovez.core.entity.support.search.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.util.Assert;
 
 /**
@@ -33,7 +37,9 @@ public final class SearchableJpaEntityMetamodel implements SearchableMetamodel, 
 
 	@Override
 	public Collection<SearchableFieldMetamodel> getSearchFields() {
-		return searchFields.values();
+		List<SearchableFieldMetamodel> modelList = new ArrayList<SearchableFieldMetamodel>(searchFields.values());
+		Collections.sort(modelList, AnnotationAwareOrderComparator.INSTANCE);
+		return modelList;
 	}
 
 	@Override
