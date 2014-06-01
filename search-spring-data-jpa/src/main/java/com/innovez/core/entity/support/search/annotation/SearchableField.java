@@ -2,11 +2,10 @@ package com.innovez.core.entity.support.search.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import org.springframework.core.Ordered;
 
 /**
  * Marking search-able field of an entity.
@@ -16,6 +15,7 @@ import org.springframework.core.Ordered;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Inherited
 public @interface SearchableField {
 	/**
 	 * Name of search-able field. If this annotation applied to field, this attribute will be ignored.
@@ -32,7 +32,7 @@ public @interface SearchableField {
 	String label() default "";
 	
 	/**
-	 * Order of search field, could be used for arranging the label in view.
+	 * Order of search field, could be used for properly arranging the fields.
 	 * 
 	 * @return
 	 */

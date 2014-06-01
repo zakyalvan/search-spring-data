@@ -94,13 +94,17 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 		htmlFormBuilder.append("<div class='input-group-btn search-type-selection'>");
 		
 		/**
+		 * Class for search related buttons, we differentiated used and unused search field by different css class bur buttons.
+		 */
+		String searchButtonCssClass = "btn btn-default";
+		
+		/**
 		 * Default label for search field selection.
 		 */
-		String searchFieldSelectionClass = "btn btn-default";
 		String selectedSearchField = hintText;
 		
 		if(formObject.isEnabled()) {
-			searchFieldSelectionClass = "btn btn-success";
+			searchButtonCssClass = "btn btn-primary";
 			String searchField = formObject.getParameterName();
 			if(StringUtils.hasText(searchField)) {
 				selectedSearchField = searchableModel.getSearchField(searchField).getLabel();
@@ -116,7 +120,7 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 				LocaleContextHolder.getLocale());
 		
 		
-		htmlFormBuilder.append("<button type='button' class='" + searchFieldSelectionClass + " dropdown-toggle' data-toggle='dropdown'><span class='search-type-selected'>" + selectedSearchField + "</span> <span class='caret'></span></button>\n");
+		htmlFormBuilder.append("<button type='button' class='" + searchButtonCssClass + " dropdown-toggle' data-toggle='dropdown'><span class='search-type-selected'>" + selectedSearchField + "</span> <span class='caret'></span></button>\n");
 		htmlFormBuilder.append("<ul class='dropdown-menu'>\n");
 		
 		/**
@@ -148,7 +152,7 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 		htmlFormBuilder.append("<input type='text' value='" + parameterValue + "' name='_simpleSearchForm_searchParameter' class='form-control' placeholder='" + keywordPlaceholder + "' />");
 		
 		htmlFormBuilder.append("<span class='input-group-btn'>");
-		htmlFormBuilder.append("<button class='btn btn-primary' type='submit'><span class='glyphicon glyphicon-search'></span></button>");
+		htmlFormBuilder.append("<button class=' " + searchButtonCssClass + " ' type='submit'><span class='glyphicon glyphicon-search'></span></button>");
 		htmlFormBuilder.append("</span>");
 		htmlFormBuilder.append("</div>");
 		htmlFormBuilder.append("</form>");
