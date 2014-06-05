@@ -48,6 +48,11 @@ public class OrganizationController {
 		return "redirect:/organizations";
 	}
 	
+	public String detail() {
+		
+		return "organizations/detail";
+	}
+	
 	@ModelAttribute(SEARCH_FORM_NAME)
 	public SimpleSearchForm prepareSimpleSearchForm() {
 		logger.debug("============== Prepare simple search form.");

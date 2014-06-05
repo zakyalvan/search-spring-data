@@ -1,7 +1,7 @@
 package com.innovez.core.entity.support.search.model;
 
 /**
- * Contract for class who carry type information of searchable type.
+ * Contract for class which carry type information of searchable type.
  * 
  * @author zakyalvan
  */

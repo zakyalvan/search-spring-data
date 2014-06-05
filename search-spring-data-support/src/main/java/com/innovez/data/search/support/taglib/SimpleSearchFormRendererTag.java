@@ -103,12 +103,16 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 		 */
 		String selectedSearchField = hintText;
 		
+		String searchFieldAutofocus = "";
+		
 		if(formObject.isEnabled()) {
 			searchButtonCssClass = "btn btn-primary";
 			String searchField = formObject.getParameterName();
 			if(StringUtils.hasText(searchField)) {
 				selectedSearchField = searchableModel.getSearchField(searchField).getLabel();
 			}
+			
+			searchFieldAutofocus = "autofocus";
 		}
 		/**
 		 * Resolve to message source, if not dclared in message source, use given text.
@@ -149,7 +153,7 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 						new Object[] {}, 
 						placeholderText, 
 						LocaleContextHolder.getLocale());
-		htmlFormBuilder.append("<input type='text' value='" + parameterValue + "' name='_simpleSearchForm_searchParameter' class='form-control' placeholder='" + keywordPlaceholder + "' />");
+		htmlFormBuilder.append("<input type='text' value='" + parameterValue + "' name='_simpleSearchForm_searchParameter' class='form-control' placeholder='" + keywordPlaceholder + "' " + searchFieldAutofocus + " />");
 		
 		htmlFormBuilder.append("<span class='input-group-btn'>");
 		htmlFormBuilder.append("<button class=' " + searchButtonCssClass + " ' type='submit'><span class='glyphicon glyphicon-search'></span></button>");
