@@ -36,20 +36,20 @@ public final class SearchableJpaEntityMetamodel implements SearchableMetamodel, 
 	}
 
 	@Override
-	public Collection<SearchableFieldMetamodel> getSearchFields() {
+	public Collection<SearchableFieldMetamodel> getSearchableFields() {
 		List<SearchableFieldMetamodel> modelList = new ArrayList<SearchableFieldMetamodel>(searchFields.values());
 		Collections.sort(modelList, AnnotationAwareOrderComparator.INSTANCE);
 		return modelList;
 	}
 
 	@Override
-	public boolean hasSearchField(String fieldName) {
+	public boolean hasSearchableField(String fieldName) {
 		return searchFields.containsKey(fieldName);
 	}
 
 	@Override
-	public SearchableFieldMetamodel getSearchField(String fieldName) {
-		Assert.isTrue(hasSearchField(fieldName), "Given fieldName parameter : '" + fieldName + "' is not found as searchable field.");
+	public SearchableFieldMetamodel getSearchableField(String fieldName) {
+		Assert.isTrue(hasSearchableField(fieldName), "Given fieldName parameter : '" + fieldName + "' is not found as searchable field.");
 		return searchFields.get(fieldName);
 	}
 

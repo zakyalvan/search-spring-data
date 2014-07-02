@@ -64,7 +64,7 @@ public class SpringDataJpaSearchManager implements SearchManager {
 		
 		boolean valid = true;
 		for(String keyField : searchParameters.keySet()) {
-			if(searchableMetamodel.hasSearchField(keyField)) {
+			if(searchableMetamodel.hasSearchableField(keyField)) {
 				logger.debug("Search field '" + keyField + "' is valid search field for target type : " + target.getName());
 				continue;
 			}

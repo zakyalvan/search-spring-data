@@ -9,19 +9,19 @@ import java.util.Collection;
  */
 public interface SearchableMetamodel extends SearchableTypeContainer {
 	/**
-	 * Retrieve all search fields.
+	 * Retrieve all searchable fields.
 	 * 
 	 * @return
 	 */
-	Collection<SearchableFieldMetamodel> getSearchFields();
+	Collection<SearchableFieldMetamodel> getSearchableFields();
 	
 	/**
-	 * Ask whether search metamodel contains given search fields.
+	 * Ask whether searchable metamodel contains given search fields.
 	 * 
 	 * @param fieldName
 	 * @return
 	 */
-	boolean hasSearchField(String fieldName);
+	boolean hasSearchableField(String fieldName);
 	
 	/**
 	 * Retrieve search field differentiated by field name.
@@ -29,5 +29,5 @@ public interface SearchableMetamodel extends SearchableTypeContainer {
 	 * @param fieldName
 	 * @return
 	 */
-	SearchableFieldMetamodel getSearchField(String fieldName);
+	SearchableFieldMetamodel getSearchableField(String fieldName);
 }

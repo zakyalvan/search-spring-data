@@ -105,7 +105,7 @@ public aspect SearchParamsMethodArgumentAdvisor {
 		SearchableMetamodel metamodel = searchManager.getSearchMetamodel(target);
 		
 		final List<Specification<T>> singleSpecifications = new ArrayList<Specification<T>>();
-		for(final SearchableFieldMetamodel fieldMetamodel : metamodel.getSearchFields()) {
+		for(final SearchableFieldMetamodel fieldMetamodel : metamodel.getSearchableFields()) {
 			if(!parameters.containsKey(fieldMetamodel.getName())) {
 				continue;
 			}

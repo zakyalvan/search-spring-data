@@ -17,7 +17,7 @@ import com.innovez.core.entity.support.search.annotation.SearchTarget;
 import com.innovez.data.search.support.dto.SimpleSearchForm;
 
 /**
- * 
+ * SpringMVC argument resolver, resolving controller method argument.
  * 
  * @author zakyalvan
  */

@@ -109,7 +109,7 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 			searchButtonCssClass = "btn btn-primary";
 			String searchField = formObject.getParameterName();
 			if(StringUtils.hasText(searchField)) {
-				selectedSearchField = searchableModel.getSearchField(searchField).getLabel();
+				selectedSearchField = searchableModel.getSearchableField(searchField).getLabel();
 			}
 			
 			searchFieldAutofocus = "autofocus";
@@ -130,7 +130,7 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 		/**
 		 * Iterate and print searchable field label.
 		 */
-		for(SearchableFieldMetamodel field : searchableModel.getSearchFields()) {
+		for(SearchableFieldMetamodel field : searchableModel.getSearchableFields()) {
 			String name = field.getName();
 			String label = applicationContext.getMessage(
 					field.getLabel(), 
