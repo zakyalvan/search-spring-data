@@ -19,15 +19,15 @@ import org.springframework.util.Assert;
 public final class SearchableJpaEntityMetamodel implements SearchableMetamodel, Serializable {
 	private final Class<?> searchableType;
 	private final String searchableTypeName;
-	private final Map<String, SearchableFieldMetamodel> searchFields;
+	private final Map<String, SearchableFieldMetamodel> searchableFields;
 	
-	public SearchableJpaEntityMetamodel(Class<?> searchableType, Map<String, SearchableFieldMetamodel> searchFields) {
+	public SearchableJpaEntityMetamodel(Class<?> searchableType, Map<String, SearchableFieldMetamodel> searchableFields) {
 		Assert.notNull(searchableType);
-		Assert.notNull(searchFields);
+		Assert.notNull(searchableFields);
 		
 		this.searchableType = searchableType;
 		this.searchableTypeName = searchableType.getName();
-		this.searchFields = searchFields;
+		this.searchableFields = searchableFields;
 	}
 
 	@Override
@@ -37,26 +37,41 @@ public final class SearchableJpaEntityMetamodel implements SearchableMetamodel, 
 
 	@Override
 	public Collection<SearchableFieldMetamodel> getSearchableFields() {
-		List<SearchableFieldMetamodel> modelList = new ArrayList<SearchableFieldMetamodel>(searchFields.values());
+		List<SearchableFieldMetamodel> modelList = new ArrayList<SearchableFieldMetamodel>(searchableFields.values());
 		Collections.sort(modelList, AnnotationAwareOrderComparator.INSTANCE);
 		return modelList;
 	}
 
 	@Override
 	public boolean hasSearchableField(String fieldName) {
-		return searchFields.containsKey(fieldName);
+		Assert.hasLength(fieldName, "Field name parameter should not be null or empty string");
+		String[] splitedFieldNames = fieldName.split("\\.", 2);
+		
+		if(splitedFieldNames.length == 1) {
+			return searchableFields.containsKey(splitedFieldNames[0]);
+		}
+		else {
+			return searchableFields.containsKey(splitedFieldNames[0]) && ((CompositeSearchableFieldMetamodel) searchableFields.get(splitedFieldNames[0])).hasSearchableField(splitedFieldNames[1]);
+		}
 	}
 
 	@Override
 	public SearchableFieldMetamodel getSearchableField(String fieldName) {
 		Assert.isTrue(hasSearchableField(fieldName), "Given fieldName parameter : '" + fieldName + "' is not found as searchable field.");
-		return searchFields.get(fieldName);
+		String[] splitedFieldNames = fieldName.split("\\.", 2);
+		
+		if(splitedFieldNames.length == 1) {
+			return searchableFields.get(splitedFieldNames[0]);
+		}
+		else {
+			return ((CompositeSearchableFieldMetamodel) searchableFields.get(splitedFieldNames[0])).getSearchableField(splitedFieldNames[1]);
+		}
 	}
 
 	@Override
 	public String toString() {
 		return "SearchableEntityMetamodel [searchableType=" + searchableType
-				+ ", searchFields=" + searchFields + "]";
+				+ ", searchFields=" + searchableFields + "]";
 	}
 
 	@Override
@@ -64,7 +79,7 @@ public final class SearchableJpaEntityMetamodel implements SearchableMetamodel, 
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((searchFields == null) ? 0 : searchFields.hashCode());
+				+ ((searchableFields == null) ? 0 : searchableFields.hashCode());
 		result = prime
 				* result
 				+ ((searchableTypeName == null) ? 0 : searchableTypeName
@@ -81,10 +96,10 @@ public final class SearchableJpaEntityMetamodel implements SearchableMetamodel, 
 		if (getClass() != obj.getClass())
 			return false;
 		SearchableJpaEntityMetamodel other = (SearchableJpaEntityMetamodel) obj;
-		if (searchFields == null) {
-			if (other.searchFields != null)
+		if (searchableFields == null) {
+			if (other.searchableFields != null)
 				return false;
-		} else if (!searchFields.equals(other.searchFields))
+		} else if (!searchableFields.equals(other.searchableFields))
 			return false;
 		if (searchableTypeName == null) {
 			if (other.searchableTypeName != null)

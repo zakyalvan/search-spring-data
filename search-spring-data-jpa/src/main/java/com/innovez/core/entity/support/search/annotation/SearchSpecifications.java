@@ -7,8 +7,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Search specifications descriptor, hint for {@link SearchParams}. If no {@link SearchSpecification} declared
- * for specific search parameter, default specification will be used.
+ * Search specifications descriptor, hint for {@link SearchParams}. If no
+ * {@link SearchSpecification} declared for specific search parameter, default
+ * specification will be used.
  * 
  * @author zakyalvan
  */
@@ -22,9 +23,9 @@ public @interface SearchSpecifications {
 	 * @return
 	 */
 	SearchSpecification[] value() default {};
-	
+
 	Group[] groups() default {};
-	
+
 	/**
 	 * Grouping of search specification.
 	 * 
@@ -32,9 +33,10 @@ public @interface SearchSpecifications {
 	 */
 	public static @interface Group {
 		SearchSpecification[] value();
+
 		GroupType type() default GroupType.AND;
 	}
-	
+
 	public static enum GroupType {
 		OR, AND
 	}

@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Give a hint for searchable type.
+ * Give a hint for search-able type.
  * 
  * @author zakyalvan
  */

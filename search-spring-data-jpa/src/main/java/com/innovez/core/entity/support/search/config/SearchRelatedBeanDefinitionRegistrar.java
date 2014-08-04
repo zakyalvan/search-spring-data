@@ -11,7 +11,7 @@ import org.springframework.core.type.AnnotationMetadata;
 
 import com.innovez.core.entity.support.search.SpringDataJpaSearchManager;
 import com.innovez.core.entity.support.search.aspects.SearchParamsMethodArgumentAdvisor;
-import com.innovez.core.entity.support.search.model.SearchableAnnotatedJpaEntityMetamodelReader;
+import com.innovez.core.entity.support.search.model.SearchableJpaEntityMetamodelReader;
 
 /**
  * Search feature related import bean registrar. Used for manually registering bean required for search feature.
@@ -44,7 +44,7 @@ public class SearchRelatedBeanDefinitionRegistrar implements ImportBeanDefinitio
 			/**
 			 * Register search meta-model reader.
 			 */
-			BeanDefinition searchMetamodelReader = BeanDefinitionBuilder.rootBeanDefinition(SearchableAnnotatedJpaEntityMetamodelReader.class)
+			BeanDefinition searchMetamodelReader = BeanDefinitionBuilder.rootBeanDefinition(SearchableJpaEntityMetamodelReader.class)
 					.getBeanDefinition();
 			registry.registerBeanDefinition("defaultSearchMetamodelReader", searchMetamodelReader);
 			

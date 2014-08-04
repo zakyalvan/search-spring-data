@@ -1,6 +1,9 @@
 package com.innovez.data.search.support.taglib;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -13,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.innovez.core.entity.support.search.SearchManager;
+import com.innovez.core.entity.support.search.model.CompositeSearchableFieldMetamodel;
 import com.innovez.core.entity.support.search.model.SearchableFieldMetamodel;
 import com.innovez.core.entity.support.search.model.SearchableMetamodel;
 import com.innovez.data.search.support.dto.SimpleSearchForm;
@@ -130,12 +134,12 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 		/**
 		 * Iterate and print searchable field label.
 		 */
-		for(SearchableFieldMetamodel field : searchableModel.getSearchableFields()) {
-			String name = field.getName();
+		Map<String, String> fieldNameToLabelMap = extractFieldNameToLabelMap(searchableModel, null);
+		for(String name : fieldNameToLabelMap.keySet()) {
 			String label = applicationContext.getMessage(
-					field.getLabel(), 
+					fieldNameToLabelMap.get(name), 
 					new Object[] {}, 
-					field.getLabel(), 
+					fieldNameToLabelMap.get(name), 
 					LocaleContextHolder.getLocale());
 			htmlFormBuilder.append("<li><a href='#' data-parameter-name='" + name + "'>" + label + "</a></li>");
 		}
@@ -190,6 +194,32 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 		else {
 			getJspContext().getOut().write(scriptFormBuilder.toString());
 		}
+	}
+	private Map<String, String> extractFieldNameToLabelMap(SearchableMetamodel searchableMetamodel, String parentPath) {
+		Map<String, String> fieldNameToLabelMap = new HashMap<String, String>();
+		
+		for(SearchableFieldMetamodel searchableFieldMetamodel : searchableMetamodel.getSearchableFields()) {
+			StringBuilder fieldNameBuilder = new StringBuilder();
+			if(parentPath != null) {
+				fieldNameBuilder.append(parentPath).append(".");
+			}
+			
+			if(searchableFieldMetamodel instanceof CompositeSearchableFieldMetamodel) {
+				CompositeSearchableFieldMetamodel compositeSearchableFieldMetamodel = (CompositeSearchableFieldMetamodel) searchableFieldMetamodel;
+				String relationPath = fieldNameBuilder.append(compositeSearchableFieldMetamodel.getName()).toString();
+				
+				// Recursively call this method to extract composite type.
+				Map<String, String> relationFieldNameToLabelMap = extractFieldNameToLabelMap(compositeSearchableFieldMetamodel, relationPath);
+				for(String fieldName : relationFieldNameToLabelMap.keySet()) {
+					fieldNameToLabelMap.put(fieldName, relationFieldNameToLabelMap.get(fieldName));
+				}
+			}
+			else {
+				fieldNameToLabelMap.put(fieldNameBuilder.append(searchableFieldMetamodel.getName()).toString(), searchableFieldMetamodel.getLabel());
+			}
+		}
+		logger.debug("++++++++++++++++" + fieldNameToLabelMap);
+		return fieldNameToLabelMap;
 	}
 
 	public SimpleSearchForm getFormObject() {

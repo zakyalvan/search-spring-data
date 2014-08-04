@@ -10,13 +10,15 @@ import java.lang.annotation.Target;
 import com.innovez.core.entity.support.search.model.SearchableMetamodel;
 
 /**
- * Marking for search-able entity. By marking an entity using this annotation, automatically
- * a {@link SearchableMetamodel} would be created and cached for subsequent usage.
+ * Marking for search-able entity. By marking an entity using this annotation,
+ * automatically a {@link SearchableMetamodel} would be created and cached for
+ * subsequent usage.
  * 
  * @author zakyalvan
  */
-@Target(ElementType.TYPE)
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-public @interface Searchable {}
+public @interface Searchable {
+}

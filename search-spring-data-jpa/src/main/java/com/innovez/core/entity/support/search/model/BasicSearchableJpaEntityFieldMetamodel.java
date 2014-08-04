@@ -10,7 +10,7 @@ import org.springframework.util.Assert;
  * @author zakyalvan
  */
 @SuppressWarnings("serial")
-public class SearchableJpaEntityFieldMetamodel implements SearchableFieldMetamodel, Serializable {
+public class BasicSearchableJpaEntityFieldMetamodel implements BasicSearchableFieldMetamodel, Serializable {
 	private final Class<?> searchableType;
 	private final String searchableTypeName;
 	private final String name;
@@ -19,7 +19,7 @@ public class SearchableJpaEntityFieldMetamodel implements SearchableFieldMetamod
 	private final String label;
 	private final int order;
 	
-	public SearchableJpaEntityFieldMetamodel(Class<?> searchableType, String name, Class<?> fieldType, String label, int order) {
+	public BasicSearchableJpaEntityFieldMetamodel(Class<?> searchableType, String name, Class<?> fieldType, String label, int order) {
 		Assert.notNull(searchableType);
 		Assert.notNull(name);
 		Assert.notNull(fieldType);
@@ -59,11 +59,13 @@ public class SearchableJpaEntityFieldMetamodel implements SearchableFieldMetamod
 		return order;
 	}
 
+	
+
 	@Override
 	public String toString() {
-		return "EntityPropertySearchFieldMetamodel [searchableType="
-				+ searchableType + ", name=" + name + ", fieldType="
-				+ fieldType + ", label=" + label + "]";
+		return "BasicSearchableJpaEntityFieldMetamodel [searchableTypeName="
+				+ searchableTypeName + ", name=" + name + ", fieldTypeName="
+				+ fieldTypeName + ", label=" + label + ", order=" + order + "]";
 	}
 
 	@Override
@@ -87,7 +89,7 @@ public class SearchableJpaEntityFieldMetamodel implements SearchableFieldMetamod
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SearchableJpaEntityFieldMetamodel other = (SearchableJpaEntityFieldMetamodel) obj;
+		BasicSearchableJpaEntityFieldMetamodel other = (BasicSearchableJpaEntityFieldMetamodel) obj;
 		if (fieldTypeName == null) {
 			if (other.fieldTypeName != null)
 				return false;

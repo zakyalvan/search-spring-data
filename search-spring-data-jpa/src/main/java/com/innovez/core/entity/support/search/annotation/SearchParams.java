@@ -6,9 +6,11 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Map;
 
 /**
- * Mark for method argument.
+ * Annotate any method argument with {@link Map} type to be evaluated as search
+ * parameter for given target type.
  * 
  * @author zakyalvan
  */

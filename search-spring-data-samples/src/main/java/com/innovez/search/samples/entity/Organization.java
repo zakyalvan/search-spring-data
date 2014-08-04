@@ -19,6 +19,8 @@ import javax.persistence.Version;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.innovez.core.entity.support.search.annotation.FieldOverride;
+import com.innovez.core.entity.support.search.annotation.FieldOverrides;
 import com.innovez.core.entity.support.search.annotation.Searchable;
 import com.innovez.core.entity.support.search.annotation.SearchableField;
 
@@ -49,10 +51,18 @@ public class Organization implements Serializable {
 	private String contactPerson;
 	
 	@SearchableField
+	@FieldOverrides({
+		@FieldOverride(name="code", field=@SearchableField(label="Asset Code")),
+		@FieldOverride(name="name", field=@SearchableField(label="Asset Name"))
+	})
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="owner")
 	private List<Asset> assets;
 	
-	@SearchableField
+	@SearchableField(order=4)
+	@FieldOverrides({
+		@FieldOverride(name="code", field=@SearchableField(label="Currency Code", order=1)),
+		@FieldOverride(name="name", field=@SearchableField(label="Currency Name", order=2))
+	})
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="currency_code", referencedColumnName="code")
 	private Currency usedCurrency;

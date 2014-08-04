@@ -7,6 +7,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.context.MessageSource;
+import org.springframework.core.Ordered;
+
 /**
  * Marking search-able field of an entity.
  * 
@@ -18,14 +21,14 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface SearchableField {
 	/**
-	 * Name of search-able field. If this annotation applied to field, this attribute will be ignored.
+	 * Name of search-able field. If this annotation applied to basic fields, this attribute will be ignored.
 	 * 
 	 * @return
 	 */
 	String name() default "";
 	
 	/**
-	 * Label code of search-able field. On runtime, this label code should be resolvable against MessageSource.
+	 * Label code of search-able field. On runtime, this label code should be resolvable against {@link MessageSource}.
 	 * 
 	 * @return
 	 */
