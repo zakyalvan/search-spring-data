@@ -8,7 +8,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.springframework.context.MessageSource;
-import org.springframework.core.Ordered;
 
 /**
  * Marking search-able field of an entity.
@@ -35,9 +34,9 @@ public @interface SearchableField {
 	String label() default "";
 	
 	/**
-	 * Order of search field, could be used for properly arranging the fields.
+	 * Order of search field, could be used for arranging the fields properly.
 	 * 
 	 * @return
 	 */
-	int order() default 0;
+	int order() default Integer.MAX_VALUE;
 }

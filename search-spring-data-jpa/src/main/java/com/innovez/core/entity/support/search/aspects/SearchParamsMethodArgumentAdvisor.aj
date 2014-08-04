@@ -104,7 +104,7 @@ public aspect SearchParamsMethodArgumentAdvisor {
 		
 		SearchableMetamodel metamodel = searchManager.getSearchMetamodel(target);
 		
-		final List<Specification<T>> singleSpecifications = new ArrayList<Specification<T>>();
+		final List<Specification<T>> searchSpecifications = new ArrayList<Specification<T>>();
 		for(final SearchableFieldMetamodel fieldMetamodel : metamodel.getSearchableFields()) {
 			if(!parameters.containsKey(fieldMetamodel.getName())) {
 				continue;
@@ -127,7 +127,7 @@ public aspect SearchParamsMethodArgumentAdvisor {
 								"%" + ((String) parameters.get(fieldMetamodel.getName())).toLowerCase() + "%");
 					}
 				};
-				singleSpecifications.add(singleSpecification);
+				searchSpecifications.add(singleSpecification);
 			}
 			// If number, using equal.
 			else if(Number.class.isAssignableFrom(fieldMetamodel.getFieldType())) {
@@ -139,20 +139,20 @@ public aspect SearchParamsMethodArgumentAdvisor {
 								parameters.get(fieldMetamodel.getName()));
 					}
 				};
-				singleSpecifications.add(singleSpecification);
+				searchSpecifications.add(singleSpecification);
 			}
 		}
 		
-		if(singleSpecifications.size() == 1) {
+		if(searchSpecifications.size() == 1) {
 			logger.debug("Only one search specification built.");
-			return singleSpecifications.get(0);
+			return searchSpecifications.get(0);
 		}
 		else {
 			Specification<T> finalSpecification = new Specification<T>() {
 				@Override
 				public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 					List<Predicate> singlePredicates = new ArrayList<Predicate>();
-					for(Specification<T> singleSpecification : singleSpecifications) {
+					for(Specification<T> singleSpecification : searchSpecifications) {
 						singlePredicates.add(singleSpecification.toPredicate(root, query, cb));
 					}
 					return cb.and((Predicate[]) singlePredicates.toArray());
