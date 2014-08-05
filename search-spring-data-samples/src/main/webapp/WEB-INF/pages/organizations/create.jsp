@@ -81,6 +81,12 @@
             <form:input path="contactPerson" type="text" class="form-control" id="contactPerson" placeholder="Contact Person" autocomplete="disable" />
           </div>
         </div>
+        <div class="row">
+          <div class="form-group col-sm-3">
+            <label for="usedCurrency">Used Currency</label>
+            <form:select path="usedCurrency" items="${currencies}" itemValue="code" itemLabel="name" placeholder="Used Currency" cssClass="form-control" />
+          </div>
+        </div>
         <a href="${organizationsEndpointUrl}" class="btn btn-warning">Cancel</a>
         <button type="submit" class="btn btn-primary">Create</button>
       </form:form>

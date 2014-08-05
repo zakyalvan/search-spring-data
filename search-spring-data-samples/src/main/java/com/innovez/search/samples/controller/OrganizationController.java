@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.innovez.core.entity.support.search.annotation.SearchTarget;
 import com.innovez.data.search.support.dto.SimpleSearchForm;
 import com.innovez.search.samples.entity.Organization;
+import com.innovez.search.samples.repository.CurrencyRepository;
 import com.innovez.search.samples.service.OrganizationService;
 
 @Controller
@@ -30,9 +31,13 @@ public class OrganizationController {
 	@Autowired
 	private OrganizationService organizationService;
 	
+	@Autowired
+	private CurrencyRepository currencyRepository;
+	
 	@RequestMapping(value={"", "/"}, params="create", method=RequestMethod.GET)
 	public String createForm(Model model) {
 		logger.debug("Show creation form.");
+		model.addAttribute("currencies", currencyRepository.findAll());
 		model.addAttribute("command", new Organization());
 		return "organizations/create";
 	}

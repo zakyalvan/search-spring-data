@@ -80,15 +80,17 @@
            	  <th>Name</th>
            	  <th>Email Address</th>
            	  <th>Contact Person</th>
+           	  <th>Used Currency</th>
            	</tr>
           </thead>
           <tbody>
             <c:forEach items="${pagedDataList.content}" var="organization" varStatus="loop">
               <tr>
                 <td>${(pagedDataList.number * pagedDataList.size) + (loop.index + 1)}</td>
-                <td><c:out value="${organization.name}"></c:out></td>
-                <td><c:out value="${organization.email}"></c:out></td>
-                <td><c:out value="${organization.contactPerson}"></c:out></td>
+                <td><c:out value="${organization.name}" /></td>
+                <td><c:out value="${organization.email}" /></td>
+                <td><c:out value="${organization.contactPerson}" /></td>
+                <td><c:out value="${organization.usedCurrency.name}" /></td>
               </tr>
             </c:forEach>
           </tbody>

@@ -2,10 +2,12 @@ package com.innovez.search.samples;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
@@ -41,5 +43,13 @@ public class DataConfig {
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
 		transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
 		return transactionManager;
+	}
+	
+	@Bean
+	public ResourceDatabasePopulator databasePopulator() {
+		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
+		databasePopulator.addScript(new ClassPathResource("/META-INF/spring/currency.dml.sql"));
+		databasePopulator.setContinueOnError(false);
+		return databasePopulator;
 	}
 }
