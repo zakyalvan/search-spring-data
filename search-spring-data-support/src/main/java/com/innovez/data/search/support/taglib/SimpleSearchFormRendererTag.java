@@ -1,8 +1,10 @@
 package com.innovez.data.search.support.taglib;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.jsp.JspException;
@@ -12,6 +14,7 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -134,14 +137,14 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 		/**
 		 * Iterate and print searchable field label.
 		 */
-		Map<String, String> fieldNameToLabelMap = extractFieldNameToLabelMap(searchableModel, null);
-		for(String name : fieldNameToLabelMap.keySet()) {
+		List<SearchableFieldNameToLabelMap> fieldNameToLabelMaps = extractFieldNameToLabelMaps(searchableModel, null);
+		for(SearchableFieldNameToLabelMap fieldNameToLabelMap : fieldNameToLabelMaps) {
 			String label = applicationContext.getMessage(
-					fieldNameToLabelMap.get(name), 
+					fieldNameToLabelMap.getLabel(), 
 					new Object[] {}, 
-					fieldNameToLabelMap.get(name), 
+					fieldNameToLabelMap.getLabel(), 
 					LocaleContextHolder.getLocale());
-			htmlFormBuilder.append("<li><a href='#' data-parameter-name='" + name + "'>" + label + "</a></li>");
+			htmlFormBuilder.append("<li><a href='#' data-parameter-name='" + fieldNameToLabelMap.getName() + "'>" + label + "</a></li>");
 		}
 		
 		htmlFormBuilder.append("</ul>");
@@ -195,9 +198,8 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 			getJspContext().getOut().write(scriptFormBuilder.toString());
 		}
 	}
-	private Map<String, String> extractFieldNameToLabelMap(SearchableMetamodel searchableMetamodel, String parentPath) {
-		Map<String, String> fieldNameToLabelMap = new HashMap<String, String>();
-		
+	private List<SearchableFieldNameToLabelMap> extractFieldNameToLabelMaps(SearchableMetamodel searchableMetamodel, String parentPath) {
+		List<SearchableFieldNameToLabelMap> fieldNameToLabelMaps = new ArrayList<SearchableFieldNameToLabelMap>();
 		for(SearchableFieldMetamodel searchableFieldMetamodel : searchableMetamodel.getSearchableFields()) {
 			StringBuilder fieldNameBuilder = new StringBuilder();
 			if(parentPath != null) {
@@ -209,17 +211,19 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 				String relationPath = fieldNameBuilder.append(compositeSearchableFieldMetamodel.getName()).toString();
 				
 				// Recursively call this method to extract composite type.
-				Map<String, String> relationFieldNameToLabelMap = extractFieldNameToLabelMap(compositeSearchableFieldMetamodel, relationPath);
-				for(String fieldName : relationFieldNameToLabelMap.keySet()) {
-					fieldNameToLabelMap.put(fieldName, relationFieldNameToLabelMap.get(fieldName));
+				List<SearchableFieldNameToLabelMap> relationFieldNameToLabelMaps = extractFieldNameToLabelMaps(compositeSearchableFieldMetamodel, relationPath);
+				for(SearchableFieldNameToLabelMap relationFieldNameToLabelMap : relationFieldNameToLabelMaps) {
+					fieldNameToLabelMaps.add(relationFieldNameToLabelMap);
 				}
 			}
 			else {
-				fieldNameToLabelMap.put(fieldNameBuilder.append(searchableFieldMetamodel.getName()).toString(), searchableFieldMetamodel.getLabel());
+				SearchableFieldNameToLabelMap fieldNameToLabelMap = new SearchableFieldNameToLabelMap(
+						fieldNameBuilder.append(searchableFieldMetamodel.getName()).toString(), 
+						searchableFieldMetamodel.getLabel());
+				fieldNameToLabelMaps.add(fieldNameToLabelMap);
 			}
 		}
-		logger.debug("++++++++++++++++" + fieldNameToLabelMap);
-		return fieldNameToLabelMap;
+		return fieldNameToLabelMaps;
 	}
 
 	public SimpleSearchForm getFormObject() {
@@ -267,5 +271,29 @@ public class SimpleSearchFormRendererTag extends SimpleTagSupport {
 	private ApplicationContext getApplicationContext() {
 		PageContext pageContext = (PageContext) getJspContext();
 		return WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+	}
+	
+	/**
+	 * Simple helper class to map field name to label
+	 * 
+	 * @author zakyalvan
+	 */
+	@SuppressWarnings("serial")
+	public static class SearchableFieldNameToLabelMap implements Serializable {
+		private final String name;
+		private final String label;
+		public SearchableFieldNameToLabelMap(String name, String label) {
+			Assert.hasLength(name);
+			Assert.hasLength(label);
+			
+			this.name = name;
+			this.label = label;
+		}
+		public String getName() {
+			return name;
+		}
+		public String getLabel() {
+			return label;
+		}
 	}
 }
