@@ -11,9 +11,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebArgumentResolver;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import com.innovez.core.entity.support.search.SearchManager;
-import com.innovez.core.entity.support.search.SearchParameterHolder;
-import com.innovez.core.entity.support.search.annotation.SearchTarget;
+import com.innovez.core.search.SearchManager;
+import com.innovez.core.search.SearchParameterHolder;
+import com.innovez.core.search.annotation.SearchTarget;
 import com.innovez.data.search.support.dto.SimpleSearchForm;
 
 /**

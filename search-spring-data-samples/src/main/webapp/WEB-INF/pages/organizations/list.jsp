@@ -77,9 +77,12 @@
           <thead>
           	<tr>
           	  <th>#</th>
-           	  <th>Name</th>
-           	  <th>Email Address</th>
-           	  <th>Contact Person</th>
+           	  <th>Organization Name</th>
+           	  <th>Organization Email</th>
+           	  <th>Manager Name</th>
+           	  <th>Manager Email</th>
+           	  <th>Contact Person Name</th>
+           	  <th>Contact Person Email</th>
            	  <th>Used Currency</th>
            	</tr>
           </thead>
@@ -89,7 +92,10 @@
                 <td>${(pagedDataList.number * pagedDataList.size) + (loop.index + 1)}</td>
                 <td><c:out value="${organization.name}" /></td>
                 <td><c:out value="${organization.email}" /></td>
-                <td><c:out value="${organization.contactPerson}" /></td>
+                <td><c:out value="${organization.manager.fullName}" /></td>
+                <td><c:out value="${organization.manager.emailAddress}" /></td>
+                <td><c:out value="${organization.contact.fullName}" /></td>
+                <td><c:out value="${organization.contact.emailAddress}" /></td>
                 <td><c:out value="${organization.usedCurrency.name}" /></td>
               </tr>
             </c:forEach>

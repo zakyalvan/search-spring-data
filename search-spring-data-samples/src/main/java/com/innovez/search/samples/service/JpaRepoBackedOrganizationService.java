@@ -14,9 +14,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import com.innovez.core.entity.support.search.SearchSpecificationHolder;
-import com.innovez.core.entity.support.search.annotation.SearchParams;
+import com.innovez.core.search.SearchSpecificationHolder;
+import com.innovez.core.search.annotation.SearchParams;
+import com.innovez.search.samples.entity.Currency;
 import com.innovez.search.samples.entity.Organization;
+import com.innovez.search.samples.entity.Person;
 import com.innovez.search.samples.repository.OrganizationRepository;
 
 @Service
@@ -29,13 +31,17 @@ public class JpaRepoBackedOrganizationService implements OrganizationService {
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
-	public Organization createOrganization(String name, String emailAddress, String contactPerson) {
+	public Organization createOrganization(String name, String emailAddress, Person manager, Person contact, Currency usedCurrency) {
 		Assert.notNull(name, "Name parameter sould not be null.");
-		Assert.notNull(emailAddress, "Email address sould not be null");
-		Assert.notNull(contactPerson, "Contact person parameter sould not be null.");
+		Assert.notNull(emailAddress, "Email address sould not be null.");
+		Assert.notNull(manager, "Contact person parameter sould not be null.");
+		Assert.notNull(contact, "Manager parameter sould not be null.");
 		
 		logger.debug("Create organization with name : " + name);
-		Organization organization = new Organization(name, emailAddress, contactPerson);
+		Organization organization = new Organization(name, emailAddress);
+		organization.setManager(manager);
+		organization.setContact(contact);
+		organization.setUsedCurrency(usedCurrency);
 		return organizationRepository.saveAndFlush(organization);
 	}
 
@@ -51,7 +57,6 @@ public class JpaRepoBackedOrganizationService implements OrganizationService {
 	}
 
 	@Override
-	@Transactional(readOnly=true)
 	public Page<Organization> getPagedOrganizationsList(Integer page, Integer size, @SearchParams(target=Organization.class, validate=true) Map<String, Object> parameters) {
 		Assert.notNull(page, "Page parameter should not be null.");
 		Assert.notNull(size, "Size parameter should not be null.");

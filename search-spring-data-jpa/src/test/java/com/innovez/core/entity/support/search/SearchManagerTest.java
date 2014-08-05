@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.innovez.core.search.SearchManager;
+
 public class SearchManagerTest {
 	private Logger logger = Logger.getLogger(SearchManagerTest.class);
 	

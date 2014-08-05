@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -46,9 +47,18 @@ public class DataConfig {
 	}
 	
 	@Bean
+	public DataSourceInitializer dataSourceInitializer() {
+	    final DataSourceInitializer initializer = new DataSourceInitializer();
+	    initializer.setDataSource(dataSource());
+	    initializer.setDatabasePopulator(databasePopulator());
+	    return initializer;
+	}
+	
+	@Bean
 	public ResourceDatabasePopulator databasePopulator() {
 		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
-		databasePopulator.addScript(new ClassPathResource("/META-INF/spring/currency.dml.sql"));
+		databasePopulator.addScript(new ClassPathResource("/META-INF/spring/currency.sql"));
+		databasePopulator.addScript(new ClassPathResource("/META-INF/spring/person.sql"));
 		databasePopulator.setContinueOnError(false);
 		return databasePopulator;
 	}

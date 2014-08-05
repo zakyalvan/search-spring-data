@@ -68,23 +68,27 @@
         <div class="row">
           <div class="form-group col-sm-6">
             <label for="name">Organization Name</label>
-            <form:input path="name" type="text" class="form-control" id="name" placeholder="Organization Name" autocomplete="disable" />
+            <form:input path="name" type="text" cssClass="form-control" id="name" placeholder="Organization Name" autocomplete="disable" />
           </div>
           <div class="form-group col-sm-6">
             <label for="email">Email Address</label>
-            <form:input path="email" type="email" class="form-control" id="email" placeholder="Email Address" autocomplete="disable" />
+            <form:input path="email" type="email" cssClass="form-control" id="email" placeholder="Email Address" autocomplete="disable" />
           </div>
         </div>
         <div class="row">
           <div class="form-group col-sm-6">
-            <label for="contactPerson">Contact Person</label>
-            <form:input path="contactPerson" type="text" class="form-control" id="contactPerson" placeholder="Contact Person" autocomplete="disable" />
+            <label for="manager">Organization Manager</label>
+            <form:select path="manager.id" id="manager" cssClass="form-control" items="${people}" itemLabel="fullName" itemValue="id" />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="contact">Contact Person</label>
+            <form:select path="contact.id" id="contact" cssClass="form-control" items="${people}" itemLabel="fullName" itemValue="id" />
           </div>
         </div>
         <div class="row">
-          <div class="form-group col-sm-3">
+          <div class="form-group col-sm-6">
             <label for="usedCurrency">Used Currency</label>
-            <form:select path="usedCurrency" items="${currencies}" itemValue="code" itemLabel="name" placeholder="Used Currency" cssClass="form-control" />
+            <form:select path="usedCurrency.code" id="usedCurrency" cssClass="form-control" items="${currencies}" itemValue="code" itemLabel="name" />
           </div>
         </div>
         <a href="${organizationsEndpointUrl}" class="btn btn-warning">Cancel</a>

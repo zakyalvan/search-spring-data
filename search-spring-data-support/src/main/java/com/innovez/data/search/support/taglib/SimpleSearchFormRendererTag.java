@@ -16,10 +16,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.innovez.core.entity.support.search.SearchManager;
-import com.innovez.core.entity.support.search.model.CompositeSearchableFieldMetamodel;
-import com.innovez.core.entity.support.search.model.SearchableFieldMetamodel;
-import com.innovez.core.entity.support.search.model.SearchableMetamodel;
+import com.innovez.core.search.SearchManager;
+import com.innovez.core.search.model.CompositeSearchableFieldMetamodel;
+import com.innovez.core.search.model.SearchableFieldMetamodel;
+import com.innovez.core.search.model.SearchableMetamodel;
 import com.innovez.data.search.support.dto.SimpleSearchForm;
 
 /**

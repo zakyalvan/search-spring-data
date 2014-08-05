@@ -12,17 +12,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.innovez.core.entity.support.search.annotation.FieldOverride;
-import com.innovez.core.entity.support.search.annotation.FieldOverrides;
-import com.innovez.core.entity.support.search.annotation.Searchable;
-import com.innovez.core.entity.support.search.annotation.SearchableField;
+import com.innovez.core.search.annotation.FieldOverride;
+import com.innovez.core.search.annotation.FieldOverrides;
+import com.innovez.core.search.annotation.Searchable;
+import com.innovez.core.search.annotation.SearchableField;
 
 @Searchable
 @Entity
@@ -34,21 +36,35 @@ public class Organization implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ORG_ID_SEQ_GENERATOR")
 	private Integer id;
 	
-	@SearchableField(label="Name", order=1)
+	@SearchableField(label="Organization Name", order=1)
 	@NotBlank
 	@Column(name="name")
 	private String name;
 	
-	@SearchableField(label="Email Address", order=2)
+	@SearchableField(label="Organization Email", order=2)
 	@Email
 	@NotBlank
 	@Column(name="email")
 	private String email;
 	
+	@SearchableField(label="Manager", order=3)
+	@FieldOverrides({
+		@FieldOverride(name="fullName", field=@SearchableField(label="Manager Name", order=1)),
+		@FieldOverride(name="emailAddress", field=@SearchableField(label="Manager Email", order=2))
+	})
+	@OneToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="manager_id", referencedColumnName="id")
+	private Person manager;
+	
 	@SearchableField(label="Contact Person", order=3)
-	@NotBlank
-	@Column(name="contact_person")
-	private String contactPerson;
+	@FieldOverrides({
+		@FieldOverride(name="fullName", field=@SearchableField(label="Contact Person Name", order=1)),
+		@FieldOverride(name="emailAddress", field=@SearchableField(label="Contact Person Email", order=2))
+	})
+	@NotNull
+	@OneToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="contact_id", referencedColumnName="id")
+	private Person contact;
 	
 	@SearchableField
 	@FieldOverrides({
@@ -72,10 +88,9 @@ public class Organization implements Serializable {
 	private Integer version;
 
 	public Organization() {}
-	public Organization(String name, String email, String contactPerson) {
+	public Organization(String name, String email) {
 		this.name = name;
 		this.email = email;
-		this.contactPerson = contactPerson;
 	}
 	
 	public Integer getId() {
@@ -99,11 +114,18 @@ public class Organization implements Serializable {
 		this.email = email;
 	}
 	
-	public String getContactPerson() {
-		return contactPerson;
+	public Person getManager() {
+		return manager;
 	}
-	public void setContactPerson(String contactPerson) {
-		this.contactPerson = contactPerson;
+	public void setManager(Person manager) {
+		this.manager = manager;
+	}
+	
+	public Person getContact() {
+		return contact;
+	}
+	public void setContact(Person contact) {
+		this.contact = contact;
 	}
 	
 	public List<Asset> getAssets() {

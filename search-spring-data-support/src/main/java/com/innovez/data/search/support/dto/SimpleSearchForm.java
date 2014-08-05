@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.util.Assert;
 
-import com.innovez.core.entity.support.search.SearchParameterHolder;
+import com.innovez.core.search.SearchParameterHolder;
 
 /**
  * Search parameter holder type.
