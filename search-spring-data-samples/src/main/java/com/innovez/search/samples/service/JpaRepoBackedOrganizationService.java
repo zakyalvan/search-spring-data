@@ -31,14 +31,16 @@ public class JpaRepoBackedOrganizationService implements OrganizationService {
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
-	public Organization createOrganization(String name, String emailAddress, Person manager, Person contact, Currency usedCurrency) {
+	public Organization createOrganization(String name, String emailAddress, Integer peopleNumber, Person manager, Person contact, Currency usedCurrency) {
 		Assert.notNull(name, "Name parameter sould not be null.");
 		Assert.notNull(emailAddress, "Email address sould not be null.");
+		Assert.notNull(peopleNumber, "People number parameter should not be null.");
 		Assert.notNull(manager, "Contact person parameter sould not be null.");
 		Assert.notNull(contact, "Manager parameter sould not be null.");
 		
 		logger.debug("Create organization with name : " + name);
 		Organization organization = new Organization(name, emailAddress);
+		organization.setPeopleNumber(peopleNumber);
 		organization.setManager(manager);
 		organization.setContact(contact);
 		organization.setUsedCurrency(usedCurrency);

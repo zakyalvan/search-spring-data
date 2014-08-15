@@ -79,6 +79,7 @@
           	  <th>#</th>
            	  <th>Organization Name</th>
            	  <th>Organization Email</th>
+           	  <th>People Number</th>
            	  <th>Manager Name</th>
            	  <th>Manager Email</th>
            	  <th>Contact Person Name</th>
@@ -92,6 +93,7 @@
                 <td>${(pagedDataList.number * pagedDataList.size) + (loop.index + 1)}</td>
                 <td><c:out value="${organization.name}" /></td>
                 <td><c:out value="${organization.email}" /></td>
+                <td><c:out value="${organization.peopleNumber}" /></td>
                 <td><c:out value="${organization.manager.fullName}" /></td>
                 <td><c:out value="${organization.manager.emailAddress}" /></td>
                 <td><c:out value="${organization.contact.fullName}" /></td>

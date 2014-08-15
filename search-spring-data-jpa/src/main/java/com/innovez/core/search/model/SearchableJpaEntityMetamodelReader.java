@@ -30,7 +30,7 @@ import com.innovez.core.search.annotation.SearchableField;
  * @author zakyalvan
  */
 public class SearchableJpaEntityMetamodelReader implements SearchableMetamodelReader {
-	private Logger logger = LoggerFactory.getLogger(SearchableJpaEntityMetamodelReader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SearchableJpaEntityMetamodelReader.class);
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -45,10 +45,20 @@ public class SearchableJpaEntityMetamodelReader implements SearchableMetamodelRe
 
 	@Override
 	public <T> SearchableMetamodel read(Class<T> target) throws Exception {
+		Assert.notNull(target, "Search target type parameter should not be null");
 		Assert.isTrue(support(target), "Search target type parameter not supported by this search-metamodel-reader.");
+		
+		Searchable searchable = AnnotationUtils.findAnnotation(target, Searchable.class);
+		String defaulFieldName = searchable.defaultField();
+		
 		Map<String, SearchableFieldMetamodel> searchableFieldMetamodels = readFields(target);
-		logger.debug(searchableFieldMetamodels.toString());
-		return new SearchableJpaEntityMetamodel(target, searchableFieldMetamodels);
+		
+		SearchableJpaEntityMetamodel searchableMetamodel = new SearchableJpaEntityMetamodel(target, searchableFieldMetamodels);
+		if(StringUtils.hasText(defaulFieldName) && searchableMetamodel.hasSearchableField(defaulFieldName)) {
+			SearchableFieldMetamodel defaultField = searchableMetamodel.getSearchableField(defaulFieldName);
+			searchableMetamodel.setDefaultField(defaultField);
+		}
+		return searchableMetamodel;
 	}
 
 	/**
@@ -58,9 +68,7 @@ public class SearchableJpaEntityMetamodelReader implements SearchableMetamodelRe
 	 * @return
 	 * @throws Exception
 	 */
-	private <T> Map<String, SearchableFieldMetamodel> readFields(Class<T> target) throws Exception {
-		Assert.isTrue(support(target), "Target type parameter not supported by this search-metamodel-reader.");
-		
+	private <T> Map<String, SearchableFieldMetamodel> readFields(Class<T> target) throws Exception {		
 		EntityType<T> entityType = entityManager.getMetamodel().entity(target);
 		Map<String, SearchableFieldInfo> includeFields = new HashMap<String, SearchableFieldInfo>();
 		for (Attribute<? super T, ?> attribute : entityType.getAttributes()) {
@@ -81,7 +89,7 @@ public class SearchableJpaEntityMetamodelReader implements SearchableMetamodelRe
 	}
 
 	/**
-	 * Read metadatas of all given includeField parameter on searchable target.
+	 * Read metadata of all (selected) given includeField parameter on any searchable target.
 	 * 
 	 * @param target
 	 * @param includeFields
@@ -112,14 +120,14 @@ public class SearchableJpaEntityMetamodelReader implements SearchableMetamodelRe
 						searchableFieldMetamodels.put(basicSearchableFieldMetamodel.getName(), basicSearchableFieldMetamodel);
 					}
 					else if (persistentAttributeType == PersistentAttributeType.MANY_TO_ONE || persistentAttributeType == PersistentAttributeType.ONE_TO_MANY || persistentAttributeType == PersistentAttributeType.ONE_TO_ONE) {
-						logger.debug("***************** Trying to read relation metadatas with type " + fieldType.getName());
+						LOGGER.debug("***************** Trying to read relation metadatas with type {}", fieldType.getName());
 						if(support(fieldType)) {
-							logger.debug("***************** Can read relation metadatas with type : " + fieldType.getName());
+							LOGGER.debug("***************** Can read relation metadatas with type : {}", fieldType.getName());
 							FieldOverrides referenceFieldOverrides = AnnotationUtils.getAnnotation(field, FieldOverrides.class);
 							if (referenceFieldOverrides != null) {
 								Map<String, SearchableFieldInfo> includeReferenceFields = new HashMap<String, SearchableFieldInfo>();
 								for (FieldOverride referenceFieldOverride : referenceFieldOverrides.value()) {
-									logger.debug("***************** Relation with name : " + fieldName + " : include field " + referenceFieldOverride.name());
+									LOGGER.debug("***************** Relation with name : {} : include field {}", fieldName, referenceFieldOverride.name());
 									SearchableFieldInfo searchableReferenceFieldInfo = new SearchableFieldInfo(
 											fieldType,
 											referenceFieldOverride.name(), 
@@ -127,11 +135,11 @@ public class SearchableJpaEntityMetamodelReader implements SearchableMetamodelRe
 											referenceFieldOverride.field().order());
 									includeReferenceFields.put(referenceFieldOverride.name(), searchableReferenceFieldInfo);
 								}
-								logger.debug("***************** Include references : " + includeReferenceFields.toString());
+								LOGGER.debug("***************** Include references : {}", includeReferenceFields.toString());
 								Map<String, SearchableFieldMetamodel> searchableReferenceFieldMetamodels = readFields(fieldType, includeReferenceFields);
-								logger.debug("***************** " + searchableReferenceFieldMetamodels);
+								LOGGER.debug("***************** {}", searchableReferenceFieldMetamodels);
 								CompositeSearchableFieldMetamodel compositeReferenceFieldMetamodel = new CompositeSearchableJpaEntityFieldMetamodel(target, fieldName, fieldType, fieldLabel, fieldOrder, searchableReferenceFieldMetamodels);
-								logger.debug("***************** " + compositeReferenceFieldMetamodel.toString());
+								LOGGER.debug("***************** {}", compositeReferenceFieldMetamodel.toString());
 								searchableFieldMetamodels.put(compositeReferenceFieldMetamodel.getName(), compositeReferenceFieldMetamodel);
 							}
 							else {

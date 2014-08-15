@@ -21,4 +21,11 @@ import com.innovez.core.search.model.SearchableMetamodel;
 @Documented
 @Inherited
 public @interface Searchable {
+	/**
+	 * Define default search-able field. If blank value (as default) given, that
+	 * means no default attribute. Non resolvable field name means no default field.
+	 * 
+	 * @return
+	 */
+	String defaultField() default "";
 }

@@ -54,7 +54,7 @@ public class OrganizationController {
 			return "organizations/create";
 		}
 		logger.debug("Create organization.");
-		organizationService.createOrganization(organization.getName(), organization.getEmail(), organization.getManager(), organization.getContact(), organization.getUsedCurrency());
+		organizationService.createOrganization(organization.getName(), organization.getEmail(), organization.getPeopleNumber(), organization.getManager(), organization.getContact(), organization.getUsedCurrency());
 		return "redirect:/organizations";
 	}
 	

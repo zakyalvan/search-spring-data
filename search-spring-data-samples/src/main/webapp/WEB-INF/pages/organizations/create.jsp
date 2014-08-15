@@ -77,6 +77,12 @@
         </div>
         <div class="row">
           <div class="form-group col-sm-6">
+            <label for="peopleNumber">People Number</label>
+            <form:input path="peopleNumber" type="text" cssClass="form-control" id="peopleNumber" placeholder="Organization Name" autocomplete="disable" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-sm-6">
             <label for="manager">Organization Manager</label>
             <form:select path="manager.id" id="manager" cssClass="form-control" items="${people}" itemLabel="fullName" itemValue="id" />
           </div>

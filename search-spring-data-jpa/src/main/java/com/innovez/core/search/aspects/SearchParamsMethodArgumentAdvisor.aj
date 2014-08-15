@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -17,11 +18,11 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
+import org.springframework.util.NumberUtils;
 
 import com.innovez.core.search.SearchManager;
 import com.innovez.core.search.SearchSpecificationHolder;
 import com.innovez.core.search.annotation.SearchParams;
-import com.innovez.core.search.model.SearchableFieldMetamodel;
 import com.innovez.core.search.model.SearchableMetamodel;
 
 /**
@@ -103,47 +104,67 @@ public aspect SearchParamsMethodArgumentAdvisor {
 		}
 		
 		SearchableMetamodel metamodel = searchManager.getSearchMetamodel(target);
-		
 		final List<Specification<T>> searchSpecifications = new ArrayList<Specification<T>>();
-		for(final SearchableFieldMetamodel fieldMetamodel : metamodel.getSearchableFields()) {
-			if(!parameters.containsKey(fieldMetamodel.getName())) {
-				continue;
-			}
+		for(final String fieldName : parameters.keySet()) {
+			Assert.isTrue(metamodel.hasSearchableField(fieldName), String.format("Field name '%s' given on parameter map object is not valid searcable field", fieldName));
 			
-			if(parameters.get(fieldMetamodel.getName()) == null) {
-				continue;
-			}
-			
-			logger.debug("Build specification for field : " + fieldMetamodel.getName() + " with type : " + fieldMetamodel.getFieldType());
-			
-			// If string, using 'like' clause.
-			if(String.class.isAssignableFrom(fieldMetamodel.getFieldType())) {
-				Specification<T> singleSpecification = new Specification<T>() {
+			Class<?> declaredFieldType = metamodel.getSearchableField(fieldName).getFieldType();
+			// Remember, if string type use 'like' clause, and use criteriaBuilder.lower method to built spec.
+			if(String.class.isAssignableFrom(declaredFieldType)) {
+				Specification<T> parameterSpecification = new Specification<T>() {
 					@Override
 					public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-						// Don't forget to use cb.lower.
+						// Iterate, to anticipate if given parameter in aaa.bbb.ccc nested field.
+						String iteratingFieldName = fieldName;
+						Path<?> iteratingPath = root;
+						while(iteratingFieldName.split("\\.", 2).length == 2)  {
+							String[] splitedIteratingFieldName = iteratingFieldName.split("\\.", 2);
+							iteratingPath = iteratingPath.get(splitedIteratingFieldName[0]);
+							iteratingFieldName = splitedIteratingFieldName[1];
+						}
+						Path<String> lastPath = iteratingPath.<String>get(iteratingFieldName);
 						return cb.like(
-								cb.lower(root.<String>get(fieldMetamodel.getName())), 
-								"%" + ((String) parameters.get(fieldMetamodel.getName())).toLowerCase() + "%");
+								cb.lower(lastPath), 
+								((String) parameters.get(fieldName)).toLowerCase() + "%");
 					}
 				};
-				searchSpecifications.add(singleSpecification);
+				searchSpecifications.add(parameterSpecification);
 			}
-			// If number, using equal.
-			else if(Number.class.isAssignableFrom(fieldMetamodel.getFieldType())) {
-				Specification<T> singleSpecification = new Specification<T>() {
-					@Override
-					public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-						return cb.equal(
-								root.get(fieldMetamodel.getName()), 
-								parameters.get(fieldMetamodel.getName()));
-					}
-				};
-				searchSpecifications.add(singleSpecification);
+			// If any number type simply using 'equal' clause
+			else if(Number.class.isAssignableFrom(declaredFieldType)) {
+				try {
+					NumberUtils.parseNumber((String) parameters.get(fieldName), Number.class);
+					Specification<T> parameterSpecification = new Specification<T>() {
+						@Override
+						public Predicate toPredicate(Root<T> root,
+								CriteriaQuery<?> query, CriteriaBuilder cb) {
+							String iteratingFieldName = fieldName;
+							Path<?> iteratingPath = root;
+							while (iteratingFieldName.split("\\.", 2).length == 2) {
+								String[] splitedIteratingFieldName = iteratingFieldName
+										.split("\\.", 2);
+								iteratingPath = iteratingPath
+										.get(splitedIteratingFieldName[0]);
+								iteratingFieldName = splitedIteratingFieldName[1];
+							}
+							Path<Number> lastPath = iteratingPath
+									.<Number> get(iteratingFieldName);
+							return cb
+									.equal(lastPath, parameters.get(fieldName));
+						}
+					};
+					searchSpecifications.add(parameterSpecification);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		
-		if(searchSpecifications.size() == 1) {
+		if(searchSpecifications.size() == 0) {
+			// Something wrong on parameter evaluation or specification building (e.g wrong number format.).
+			return null;
+		}
+		else if(searchSpecifications.size() == 1) {
 			logger.debug("Only one search specification built.");
 			return searchSpecifications.get(0);
 		}

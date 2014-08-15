@@ -83,6 +83,11 @@ public class Organization implements Serializable {
 	@JoinColumn(name="currency_code", referencedColumnName="code")
 	private Currency usedCurrency;
 	
+	@SearchableField(label="People Number", order=5)
+	@NotNull
+	@Column(name="people_number")
+	private Integer peopleNumber;
+	
 	@Version
 	@Column(name="version")
 	private Integer version;
@@ -142,10 +147,14 @@ public class Organization implements Serializable {
 		this.usedCurrency = usedCurrency;
 	}
 	
+	public Integer getPeopleNumber() {
+		return peopleNumber;
+	}
+	public void setPeopleNumber(Integer peopleNumber) {
+		this.peopleNumber = peopleNumber;
+	}
+	
 	public Integer getVersion() {
 		return version;
-	}
-	public void setVersion(Integer version) {
-		this.version = version;
 	}
 }

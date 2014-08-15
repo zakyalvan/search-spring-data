@@ -68,6 +68,11 @@ public class CompositeSearchableJpaEntityFieldMetamodel implements CompositeSear
 		return searchableFieldsList;
 	}
 	@Override
+	public SearchableFieldMetamodel getDefaultField() {
+		// Always return null value.
+		return null;
+	}
+	@Override
 	public boolean hasSearchableField(String fieldName) {
 		Assert.hasLength(fieldName, "Field name parameter should not be null or empty string");
 		String[] splitedFieldNames = fieldName.split("\\.", 2);
