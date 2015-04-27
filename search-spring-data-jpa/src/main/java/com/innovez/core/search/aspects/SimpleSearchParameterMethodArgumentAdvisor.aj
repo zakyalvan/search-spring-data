@@ -1,6 +1,7 @@
 package com.innovez.core.search.aspects;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.innovez.core.search.SearchManager;
@@ -14,7 +15,7 @@ import com.innovez.core.search.param.SimpleSearchParameter;
  * @author zakyalvan
  */
 public aspect SimpleSearchParameterMethodArgumentAdvisor {
-	private Logger logger = Logger.getLogger(SimpleSearchParameterMethodArgumentAdvisor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleSearchParameterMethodArgumentAdvisor.class);
 	
 	@Autowired
 	private SearchManager searchManager;
@@ -34,16 +35,16 @@ public aspect SimpleSearchParameterMethodArgumentAdvisor {
 	 */
 	Object around(SimpleSearchParameter searchParameter) : executionOfMethodsContainingSimpleSearchParameterArgument(searchParameter) {
 		if(searchParameter == null) {
-			logger.error("Given search parameter is null, proceed normal execution.");
+			LOGGER.error("Given search parameter is null, proceed normal execution.");
 			return proceed(searchParameter);
 		}
 		
-		logger.debug("Retrieve metamodel of searchable type.");
+		LOGGER.debug("Retrieve metamodel of searchable type.");
 		SearchableMetamodel metamodel = searchManager.getSearchMetamodel(searchParameter.getSearchableType());
 		
-		logger.debug("Validate search parameter name, whether the field is searchable field of type : " + searchParameter.getSearchableType().getName());
+		LOGGER.debug("Validate search parameter name, whether the field is searchable field of type : " + searchParameter.getSearchableType().getName());
 		if(!metamodel.hasSearchableField(searchParameter.getName())) {
-			logger.error("Given search parameter name " + searchParameter.getName() + " is not valid searchable field of type : " + searchParameter.getSearchableType().getName());
+			LOGGER.error("Given search parameter name " + searchParameter.getName() + " is not valid searchable field of type : " + searchParameter.getSearchableType().getName());
 			throw new SearchOperationException("Given search parameter name " + searchParameter.getName() + " is not valid searchable field of type : " + searchParameter.getSearchableType().getName());
 		}
 		

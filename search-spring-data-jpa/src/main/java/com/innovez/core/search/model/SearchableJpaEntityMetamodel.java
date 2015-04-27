@@ -21,8 +21,6 @@ public final class SearchableJpaEntityMetamodel implements SearchableMetamodel, 
 	private final String searchableTypeName;
 	private final Map<String, SearchableFieldMetamodel> searchableFields;
 	
-	private SearchableFieldMetamodel defaultField;
-	
 	public SearchableJpaEntityMetamodel(Class<?> searchableType, Map<String, SearchableFieldMetamodel> searchableFields) {
 		Assert.notNull(searchableType);
 		Assert.notNull(searchableFields);
@@ -42,15 +40,6 @@ public final class SearchableJpaEntityMetamodel implements SearchableMetamodel, 
 		List<SearchableFieldMetamodel> modelList = new ArrayList<SearchableFieldMetamodel>(searchableFields.values());
 		Collections.sort(modelList, AnnotationAwareOrderComparator.INSTANCE);
 		return modelList;
-	}
-
-	@Override
-	public SearchableFieldMetamodel getDefaultField() {
-		return defaultField;
-	}
-	public void setDefaultField(SearchableFieldMetamodel defaultField) {
-		Assert.notNull(defaultField);
-		this.defaultField = defaultField;
 	}
 
 	@Override

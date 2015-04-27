@@ -1,7 +1,6 @@
 package com.innovez.core.entity.support.search;
 
 import org.apache.log4j.Logger;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.innovez.core.search.SearchManager;

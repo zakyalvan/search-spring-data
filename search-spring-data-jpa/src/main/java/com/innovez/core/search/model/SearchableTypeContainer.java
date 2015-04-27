@@ -1,7 +1,7 @@
 package com.innovez.core.search.model;
 
 /**
- * Contract for class which carry type information of search-able type.
+ * Contract for class which carry type information of searchable type.
  * 
  * @author zakyalvan
  */

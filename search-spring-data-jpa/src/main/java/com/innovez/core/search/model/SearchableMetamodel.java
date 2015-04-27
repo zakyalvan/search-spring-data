@@ -16,13 +16,6 @@ public interface SearchableMetamodel extends SearchableTypeContainer {
 	Collection<SearchableFieldMetamodel> getSearchableFields();
 	
 	/**
-	 * Retrieve default of searchable field.
-	 * 
-	 * @return
-	 */
-	SearchableFieldMetamodel getDefaultField();
-	
-	/**
 	 * Ask whether searchable metamodel contains given search fields.
 	 * 
 	 * @param fieldName

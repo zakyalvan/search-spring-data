@@ -13,8 +13,9 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.log4j.Logger;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
@@ -31,7 +32,7 @@ import com.innovez.core.search.model.SearchableMetamodel;
  * @author zakyalvan
  */
 public aspect SearchParamsMethodArgumentAdvisor {
-	private Logger logger = Logger.getLogger(SearchParamsMethodArgumentAdvisor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SearchParamsMethodArgumentAdvisor.class);
 	
 	@Autowired
 	private SearchManager searchManager;
@@ -43,13 +44,13 @@ public aspect SearchParamsMethodArgumentAdvisor {
 	 */
 	pointcut withSearchParamsAnnotatedArgument(Object targetObject, Map<String, Object> parameters) : execution(* *.*(.., @SearchParams (Map<String,Object>))) && args(.., parameters) && target(targetObject);
 	Object around(Object targetObject, Map<String, Object> parameters) :  withSearchParamsAnnotatedArgument(targetObject, parameters) {
-		logger.debug("Before execution of method with @SearchParams annotated argument, check whether validate search parameters.");
+		LOGGER.debug("Before execution of method with @SearchParams annotated argument, check whether validate search parameters.");
 		
 		Object[] methodArguments = thisJoinPoint.getArgs();
 		
 		MethodSignature methodSignature = (MethodSignature) thisJoinPoint.getSignature();
 		Method method = methodSignature.getMethod();
-		Annotation[][] methodArgumentsAnnotations = method.getParameterAnnotations();
+		Annotation[][] methodArgsAnnotations = method.getParameterAnnotations();
 		
 		Map<String, Object> overridingParameters = new HashMap<String, Object>();
 		for(String searchField : parameters.keySet()) {
@@ -60,17 +61,20 @@ public aspect SearchParamsMethodArgumentAdvisor {
 		 * Loop for every method arguments, looking for SearchParams annotated arguments.
 		 * Currently we only support one SearchParams per-method arguments.
 		 */
-		for(int i = 0; i < methodArgumentsAnnotations.length; i++) {
-			Annotation[] argumentAnnotations = methodArgumentsAnnotations[i];
-			for(Annotation methodArgumentAnnotation : argumentAnnotations) {
-				if(methodArgumentAnnotation instanceof SearchParams) {
+		for(int i = 0; i < methodArgsAnnotations.length; i++) {
+			Annotation[] argAnnotations = methodArgsAnnotations[i];
+			for(Annotation methodArgAnnotation : argAnnotations) {
+				if(methodArgAnnotation instanceof SearchParams) {
 					Assert.isTrue(methodArguments[i] instanceof Map, "SearchParams annotated method argument (on " + targetObject.getClass().getName() + "." + method.getName() + ") should in type of Map with key String and general Object value.");
 					
 					@SuppressWarnings("unchecked")
 					Map<String, Object> searchParameters = (Map<String, Object>) methodArguments[i];
-					SearchParams searchParamsAnnotation = (SearchParams) methodArgumentAnnotation;
+					SearchParams searchParamsAnnotation = (SearchParams) methodArgAnnotation;
 					if(searchParamsAnnotation.validate()) {
-						logger.debug("Validation on SearchParams annotated method argument of method " + targetObject.getClass().getName() + "." + method.getName() + " is enabled. Validate search parameters.");
+						LOGGER.debug("Validation on SearchParams annotated method argument of method {}.{} is enabled. Validate search parameters.", 
+								targetObject.getClass().getName(), 
+								method.getName());
+						
 						Assert.isTrue(searchManager.isValidSearchParameters(searchParamsAnnotation.target(), searchParameters), "Given search parameters " + searchParameters + " is not valid for target type " + searchParamsAnnotation.target());				
 					}
 					
@@ -79,13 +83,13 @@ public aspect SearchParamsMethodArgumentAdvisor {
 					 */
 					overridingParameters.put(SearchSpecificationHolder.FINAL_SPECIFICATION, buildFinalSpecification(searchParamsAnnotation.target(), searchParameters));
 					
-					logger.debug("Search param found, break!");
+					LOGGER.debug("Search param found, break!");
 					break;
 				}
 			}
 		}
 		
-		logger.debug("Proceed call with parameters : " + overridingParameters);
+		LOGGER.debug("Proceed call with parameters : {}", overridingParameters);
 		return proceed(targetObject, overridingParameters);
 	}
 	
@@ -97,7 +101,7 @@ public aspect SearchParamsMethodArgumentAdvisor {
 	 * @return
 	 */
 	private <T> Specification<T> buildFinalSpecification(Class<T> target, final Map<String, Object> parameters) {
-		logger.debug("Build final search specification.");
+		LOGGER.debug("Build final search specification.");
 		
 		if(parameters.size() == 0) {
 			return null;
@@ -165,7 +169,7 @@ public aspect SearchParamsMethodArgumentAdvisor {
 			return null;
 		}
 		else if(searchSpecifications.size() == 1) {
-			logger.debug("Only one search specification built.");
+			LOGGER.debug("Only one search specification built.");
 			return searchSpecifications.get(0);
 		}
 		else {

@@ -2,7 +2,8 @@ package com.innovez.core.search.config;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -20,7 +21,7 @@ import com.innovez.core.search.model.SearchableJpaEntityMetamodelReader;
  * @author zakyalvan
  */
 public class SearchRelatedBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
-	private Logger logger = Logger.getLogger(SearchRelatedBeanDefinitionRegistrar.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SearchRelatedBeanDefinitionRegistrar.class);
 	
 	/**
 	 * Register beans for search related feature. We use this because on future we need to extends this project to support 
@@ -32,7 +33,7 @@ public class SearchRelatedBeanDefinitionRegistrar implements ImportBeanDefinitio
 		PersistenceMechanism persistenceMechanism =  (PersistenceMechanism) annotationAttributes.get("mechanism");
 		
 		if(persistenceMechanism == PersistenceMechanism.JPA) {
-			logger.debug("Using jpa persistence mechanism, then registering jpa related search bean.");
+			LOGGER.debug("Using jpa persistence mechanism, then registering jpa related search bean.");
 			
 			/**
 			 * Register search manager.

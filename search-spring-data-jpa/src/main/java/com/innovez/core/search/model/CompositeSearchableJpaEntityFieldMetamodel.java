@@ -20,7 +20,7 @@ public class CompositeSearchableJpaEntityFieldMetamodel implements CompositeSear
 	private final String label;
 	private final Integer order;
 
-	private final Map<String, SearchableFieldMetamodel> searchableFields;
+	private final Map<String, SearchableFieldMetamodel> searchableFields;// = new HashMap<String, SearchableFieldMetamodel>();
 
 	public CompositeSearchableJpaEntityFieldMetamodel(Class<?> searchableType, String name, Class<?> fieldType, String label, Integer order, Map<String, SearchableFieldMetamodel> searchableFields) {
 		Assert.notNull(searchableType, "Searchable type parameter should not be null");
@@ -66,11 +66,6 @@ public class CompositeSearchableJpaEntityFieldMetamodel implements CompositeSear
 		List<SearchableFieldMetamodel> searchableFieldsList = new ArrayList<SearchableFieldMetamodel>(searchableFields.values());
 		Collections.sort(searchableFieldsList, AnnotationAwareOrderComparator.INSTANCE);
 		return searchableFieldsList;
-	}
-	@Override
-	public SearchableFieldMetamodel getDefaultField() {
-		// Always return null value.
-		return null;
 	}
 	@Override
 	public boolean hasSearchableField(String fieldName) {

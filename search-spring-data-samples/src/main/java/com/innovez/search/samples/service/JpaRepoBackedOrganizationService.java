@@ -48,7 +48,7 @@ public class JpaRepoBackedOrganizationService implements OrganizationService {
 	}
 
 	@Override
-	public Page<Organization> getPagedOrganizationsList(Integer page, Integer size) {
+	public Page<Organization> getOrganizations(Integer page, Integer size) {
 		Assert.notNull(page, "Page parameter should not be null.");
 		Assert.notNull(size, "Size parameter should not be null.");
 		
@@ -59,7 +59,7 @@ public class JpaRepoBackedOrganizationService implements OrganizationService {
 	}
 
 	@Override
-	public Page<Organization> getPagedOrganizationsList(Integer page, Integer size, @SearchParams(target=Organization.class, validate=true) Map<String, Object> parameters) {
+	public Page<Organization> getOrganizations(Integer page, Integer size, @SearchParams(target=Organization.class, validate=true) Map<String, Object> parameters) {
 		Assert.notNull(page, "Page parameter should not be null.");
 		Assert.notNull(size, "Size parameter should not be null.");
 		

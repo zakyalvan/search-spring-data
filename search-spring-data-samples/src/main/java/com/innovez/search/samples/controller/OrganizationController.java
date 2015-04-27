@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.innovez.core.search.annotation.SearchTarget;
-import com.innovez.data.search.support.dto.SimpleSearchForm;
 import com.innovez.search.samples.entity.Organization;
 import com.innovez.search.samples.repository.CurrencyRepository;
 import com.innovez.search.samples.repository.PersonRespository;
 import com.innovez.search.samples.service.OrganizationService;
+import com.innovez.web.support.search.SimpleSearchForm;
 
 @Controller
 @RequestMapping("/organizations")
@@ -75,12 +75,12 @@ public class OrganizationController {
 		
 		if(searchForm.isEnabled()) {
 			logger.debug("Search enabled, retrieve paged data list with search parameters.");
-			Page<Organization> pagedDataList = organizationService.getPagedOrganizationsList(page, size, searchForm.getParameters());
+			Page<Organization> pagedDataList = organizationService.getOrganizations(page, size, searchForm.getParameters());
 			model.addAttribute("pagedDataList", pagedDataList);
 		}
 		else {
 			logger.debug("Search disabled.");
-			Page<Organization> pagedDataList = organizationService.getPagedOrganizationsList(page, size);
+			Page<Organization> pagedDataList = organizationService.getOrganizations(page, size);
 			model.addAttribute("pagedDataList", pagedDataList);
 		}
 		

@@ -5,7 +5,7 @@ import java.util.Map;
 import com.innovez.core.search.model.SearchableMetamodel;
 
 /**
- * Search manager.
+ * Base contract for search manager.
  * 
  * @author zakyalvan
  */

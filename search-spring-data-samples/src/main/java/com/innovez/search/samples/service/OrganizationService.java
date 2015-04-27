@@ -10,6 +10,6 @@ import com.innovez.search.samples.entity.Person;
 
 public interface OrganizationService {
 	Organization createOrganization(String name, String emailAddress, Integer peopleNumber, Person manager, Person contact, Currency usedCurrency);
-	Page<Organization> getPagedOrganizationsList(Integer page, Integer size);
-	Page<Organization> getPagedOrganizationsList(Integer page, Integer size, Map<String, Object> parameters);
+	Page<Organization> getOrganizations(Integer page, Integer size);
+	Page<Organization> getOrganizations(Integer page, Integer size, Map<String, Object> parameters);
 }

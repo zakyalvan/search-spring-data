@@ -12,11 +12,6 @@ public class AbstractSearchableMetamodel implements SearchableMetamodel {
 	public Collection<SearchableFieldMetamodel> getSearchableFields() {
 		return null;
 	}
-	
-	@Override
-	public SearchableFieldMetamodel getDefaultField() {
-		return null;
-	}
 
 	@Override
 	public boolean hasSearchableField(String fieldName) {
